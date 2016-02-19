@@ -1,54 +1,41 @@
-##################################
-Expressions and Control Structures
-##################################
+#################################
+Выражения и управляющие структуры
+#################################
 
 .. index:: if, else, while, for, break, continue, return, switch, goto
 
-Control Structures
-===================
+Управляющие структуры
+=====================
 
-Most of the control structures from C/JavaScript are available in Solidity
-except for `switch` and `goto`. So
-there is: `if`, `else`, `while`, `for`, `break`, `continue`, `return`, `? :`, with
-the usual semantics known from C / JavaScript.
+В Solidity доступно большинство управляющих структур C/JavaScript, за исключением 'switch' и 'goto'. Таким образом, это 'if', 'else', 'while', 'for', 'break', 'continue', 'return' и '? :' с такой же семантикой, что и в C / JavaScript.
 
-Parentheses can *not* be omitted for conditionals, but curly brances can be omitted
-around single-statement bodies.
+Обычные скобки в условных операторах опускать *нельзя*, но фигурные скобки вокруг одиночных выражений можно.
 
-Note that there is no type conversion from non-boolean to boolean types as
-there is in C and JavaScript, so `if (1) { ... }` is *not* valid Solidity.
+Имейте в виду, что, в отличие от C и JavaScript, в Solidity не выполняется преобразование типов из небулева в булев, так что код 'if (1) { ... }' *не* является допустимым кодом Solidity.
 
 .. index:: ! function;call, function;internal, function;external
 
-Function Calls
+Вызовы функций
 ==============
 
-Internal Function Calls
------------------------
+Внутренние вызовы функций
+-------------------------
 
-Functions of the current contract can be called directly ("internally"), also recursively, as seen in
-this nonsensical example::
+Функции текущего контракта можно вызывать непосредственно ("внутренне"), а также рекурсивно, как показано в этом бессмысленном примере::
 
     contract c {
       function g(uint a) returns (uint ret) { return f(); }
       function f() returns (uint ret) { return g(7) + f(); }
     }
 
-These function calls are translated into simple jumps inside the EVM. This has
-the effect that the current memory is not cleared, i.e. passing memory references
-to internally-called functions is very efficient. Only functions of the same
-contract can be called internally.
+Эти вызовы функций транслируются в простые переходы jumps в EVM. Это имеет тот эффект, что текущая память не очищается, т. е. передача ссылок на память внутренне вызываемым функциям очень эффективна. Внутренне можно вызывать только функции того же контракта.
 
-External Function Calls
------------------------
+Внешние вызовы функций
+----------------------
 
-The expression `this.g(8);` is also a valid function call, but this time, the function
-will be called "externally", via a message call and not directly via jumps.
-Functions of other contracts have to be called externally. For an external call,
-all function arguments have to be copied to memory.
+Выражение 'this.g(8);' также является допустимым вызовом функции, но в этот раз функция будет вызвана "внешне", с помощью сообщения, а не напрямую с помощью jumps. Функции других контрактов необходимо вызывать внешне. Для внешнего вызова все аргументы функции должны быть скопированы в память.
 
-When calling functions
-of other contracts, the amount of Wei sent with the call and the gas can be specified::
+При вызове функций других контрактов можно указать количество Wei и газа, отправляемых с вызовом::
     
     contract InfoFeed {
       function info() returns (uint ret) { return 42; }
@@ -59,52 +46,43 @@ of other contracts, the amount of Wei sent with the call and the gas can be spec
       function callFeed() { feed.info.value(10).gas(800)(); }
     }
 
-Note that the expression `InfoFeed(addr)` performs an explicit type conversion stating
-that "we know that the type of the contract at the given address is `InfoFeed`" and
-this does not execute a constructor. We could also have used `function setFeed(InfoFeed _feed) { feed = _feed; }` directly.  Be careful about the fact that `feed.info.value(10).gas(800)`
-only (locally) sets the value and amount of gas sent with the function call and only the
-parentheses at the end perform the actual call.
+Обратите внимание, что выражение 'InfoFeed(addr)' выполняет явное преобразование типа, заявляя, что "мы знаем, что тип контракта по указанному адресу - 'InfoFeed'", и при этом конструктор не выполняется. Мы могли бы также присвоить значение напрямую: 'function setFeed(InfoFeed _feed) { feed = _feed; }'. Знайте о том факте, что 'feed.info.value(10).gas(800)' только (локально) задает значение и объем газа, отправляемые с вызовом функции, и только скобки в конце запускают фактический вызов.
 
-Named Calls and Anonymous Function Parameters
----------------------------------------------
+Именованные вызовы и анонимные параметры функций
+------------------------------------------------
 
-Function call arguments can also be given by name, in any order, and the names
-of unused parameters (especially return parameters) can be omitted.
+Аргументы вызовов функций можно указывать по имени в любом порядке, и имена неиспользуемых параметров (особенно возвращаемых) можно опускать.
 
 ::
 
     contract c {
       function f(uint key, uint value) { ... }
       function g() {
-        // named arguments
+        // именованные аргументы
         f({value: 2, key: 3});
       }
-      // omitted parameters
+      // опущенные параметры
       function func(uint k, uint) returns(uint) {
         return k;
       }
     }
 
-Order of Evaluation of Expressions
-==================================
+Порядок оценки выражений
+========================
 
-The evaluation order of expressions is not specified (more formally, the order
-in which the children of one node in the expression tree are evaluated is not
-specified, but they are of course evaluated before the node itself). It is only
-guaranteed that statements are executed in order and short-circuiting for
-boolean expressions is done.
+Порядок оценки выражений не задан (выражаясь более формально, не задан порядок, в котором оцениваются дочерние узлы одного узла в дереве выражения, но, конечно, они оцениваются до самого узла). Гарантируется только лишь то, что операторы выполняются по порядку и что выполняется short-circuiting булевых выражений.
 
 .. index:: ! assignment
 
-Assignment
-==========
+Присваивание
+============
 
 .. index:: ! assignment;destructuring
 
-Destructuring Assignments and Returning Multiple Values
--------------------------------------------------------
+Присваивание с деструктурированием и возврат нескольких значений
+----------------------------------------------------------------
 
-Solidity internally allows tuple types, i.e. a list of objects of potentially different types whose size is a constant at compile-time. Those tuples can be used to return multiple values at the same time and also assign them to multiple variables (or LValues in general) at the same time::
+В Solidity внутри разрешены типы-кортежи, т. е. список объектов потенциально разных типов, размер которых известен во время компиляции. Эти кортежи можно использовать, чтобы возвращать сразу несколько значений и также назначать их нескольким переменным (или LValues в общем) одновременно::
 
     contract C {
       uint[] data;
@@ -112,56 +90,55 @@ Solidity internally allows tuple types, i.e. a list of objects of potentially di
         return (7, true, 2);
       }
       function g() {
-        // Declares and assigns the variables. Specifying the type explicitly is not possible.
+        // Объявляются переменные и им присваиваются значения. Явно указать тип невозможно.
         var (x, b, y) = f();
-        // Assigns to a pre-existing variable.
+        // Присвоение значений существующим переменным.
         (x, y) = (2, 7);
-        // Common trick to swap values -- does not work for non-value storage types.
+        // Чато используемый трюк для обмена значениями -- не работает для  non-value storage types.
         (x, y) = (y, x);
-        // Components can be left out (also for variable declarations).
-        // If the tuple ends in an empty component,
-        // the rest of the values are discarded.
-        (data.length,) = f(); // Sets the length to 7
-        // The same can be done on the left side.
-        (,data[3]) = f(); // Sets data[3] to 2
-        // Components can only be left out at the left-hand-side of assignments, with
-        // one exception:
+        // Компоненты можно опускать (для объявлений переменных тоже).
+        // Если кортеж заканчивается пустым компонентом,
+        // остальные значения отбрасываются.
+        (data.length,) = f(); // Присваивает length значение 7
+        // То же самое можно сделать слева.
+        (,data[3]) = f(); // Присваивает data[3] значение 2
+        // Компоненты можно опускать только с левой стороны присваиваний, за
+        // единственным исключением:
         (x,) = (1,);
-        // (1,) is the only way to specify a 1-component tuple, because (1) is
-        // equivalent to 1.
+        // (1,) - это единственный способ указать однокомпонентный кортеж,
+        // потому что (1) эквивалентно 1.
       }
     }
 
-Complications for Arrays and Structs
-------------------------------------
+Трудности работы с массивами и структурами
+------------------------------------------
 
-The semantics of assignment are a bit more complicated for non-value types like arrays and structs.
-Assigning *to* a state variable always creates an independent copy. On the other hand, assigning to a local variable creates an independent copy only for elementary types, i.e. static types that fit into 32 bytes. If structs or arrays (including `bytes` and `string`) are assigned from a state variable to a local variable, the local variable holds a reference to the original state variable. A second assignment to the local variable does not modify the state but only changes the reference. Assignments to members (or elements) of the local variable *do* change the state.
+Семантика присваивания немного сложнее в случае незначимых типов, таких как массивы и структуры. Присваивание значения переменной состояния всегда приводит к созданию независимой копии. С другой стороны, присваивание значения локальной переменной создает независимую копию только для элементарных типов, т. е. статических типов, помещающихся в 32 байта. Если структуры или массивы (включая 'bytes' и 'string' назначаются из переменной состояния локальной переменной, локальная переменная содержит ссылку на оригинальную переменную состояния. Второе присваивание локальной переменной не изменяет состояние, но только изменяет ссылку. Присваивание значений членам (или элементам) локальной переменной изменяет состояние.
 
 .. index:: ! exception, ! throw
 
-Exceptions
+Исключения
 ==========
 
-There are some cases where exceptions are thrown automatically (see below). You can use the `throw` instruction to throw an exception manually. The effect of an exception is that the currently executing call is stopped and reverted (i.e. all changes to the state and balances are undone) and the exception is also "bubbled up" through Solidity function calls (exceptions are `send` and the low-level functions `call` and `callcode`, those return `false` in case of an exception).
+В некоторых ситуациях исключения генерируются автоматически (см. ниже). Вы можете использовать инструкцию 'throw', чтобы генерировать исключение вручную. Эффект исключения таков, что выполняемый вызов останавливается и обращается (т. е. все изменения состояния и балансов отменяются), а исключение "всплывает" по вызовам функций Solidity (исключения 'отправляются', а низкоуровневые функции 'call' and 'callcode', those return `false` in case of an exception).
 
-Catching exceptions is not yet possible.
+Перехватьывать исключения пока невозможно.
 
-In the following example, we show how `throw` can be used to easily revert an Ether transfer and also how to check the return value of `send`::
+В следующем примере показано, как можно использовать 'throw', чтобы легко обратить передачу эфира, и как проверить возвращаемое значение 'send'::
 
     contract Sharer {
         function sendHalf(address addr) returns (uint balance) {
             if (!addr.send(msg.value/2))
-                throw; // also reverts the transfer to Sharer
+                throw; // передаваемые средства возвращаются Sharer
             return this.balance;
         }
     }
 
-Currently, there are three situations, where exceptions happen automatically in Solidity:
+В настоящее время исключения автоматически генерируются в Solidity в трех ситуациях:
 
-1. If you access an array beyond its length (i.e. `x[i]` where `i >= x.length`)
-2. If a function called via a message call does not finish properly (i.e. it runs out of gas or throws an exception itself).
-3. If a non-existent function on a library is called or Ether is sent to a library.
+1. Если вы получаете доступ к массиву за его длиной (т. е. 'x[i]', где 'i >= x.length').
+2. Если функция, вызванная путем вызова сообщения, не завершается правильно (т. е. исчерпывает газ или сама генерирует исключение).
+3. Если вызывается несуществующая функция библиотеки или эфир отправляется библиотеке.
 
-Internally, Solidity performs an "invalid jump" when an exception is thrown and thus causes the EVM to revert all changes made to the state. The reason for this is that there is no safe way to continue execution, because an expected effect did not occur. Because we want to retain the atomicity of transactions, the safest thing to do is to revert all changes and make the whole transaction (or at least call) without effect.
+Внутренне Solidity выполняет "invalid jump", когда генерируется исключение, и, таким образом, указывает EVM обратить все изменения состояния. Причина этого в том, что нет безопасного способа продолжить выполнение, потому что ожидаемый эффект не был достигнут. Поскольку мы хотим сохранить атомарность транзакций, самое безопасное - это обратить все изменения и выполнить всю транзакцию (или, по крайней мере, вызов) без эффекта.
 
