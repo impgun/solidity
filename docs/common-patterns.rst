@@ -1,19 +1,14 @@
-###############
-Common Patterns
-###############
+############################
+Часто встречающиеся паттерны
+############################
 
 .. index:: access;restricting
 
-******************
-Restricting Access
-******************
+*******************
+Ограничение доступа
+*******************
 
-Restricting access is a common pattern for contracts.
-Note that you can never restrict any human or computer
-from reading the content of your transactions or
-your contract's state. You can make it a bit harder
-by using encryption, but if your contract is supposed
-to read the data, so will everyone else.
+Ограничение доступа - частый паттерн в контрактах. Имейте в виду, что вы не можете помешать человеку или компьютеру прочитать содержимое ваших транзакций или состояние вашего контракта. Вы можете немного затруднить это с помощью шифрования, но если предполагается, что ваш контракт должен читать данные, их сможет прочитать кто угодноelse.
 
 You can restrict read access to your contract's state
 by **other contracts**. That is actually the default
