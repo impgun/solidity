@@ -1,22 +1,20 @@
-**************************************
-Units and Globally Available Variables
-**************************************
+*****************************************
+Единицы измерения и глобальные переменные
+*****************************************
 
 .. index:: wei, finney, szabo, ether
 
-Ether Units
-===========
+Единицы измерения эфира
+=======================
 
-A literal number can take a suffix of `wei`, `finney`, `szabo` or `ether` to convert between the subdenominations of Ether, where Ether currency numbers without a postfix are assumed to be "wei", e.g. `2 ether == 2000 finney` evaluates to `true`.
+Численный литерал может иметь суффикс `wei`, `finney`, `szabo` или `ether`, указывающий единицу измерения, при этом значения без суффикса соответствуют "wei", например `2 ether == 2000 finney` равно `true`.
 
 .. index:: time, seconds, minutes, hours, days, weeks, years
 
-Time Units
-==========
+Единицы измерения времени
+=========================
 
-Suffixes of `seconds`, `minutes`, `hours`, `days`, `weeks` and
-`years` after literal numbers can be used to convert between units of time where seconds are the base
-unit and units are considered naively in the following way:
+Суффиксы `seconds`, `minutes`, `hours`, `days`, `weeks` и `years` после численных литералов можно использовать для преобразования единиц времени, при этом базовой единицей является секунда и действуют следующие упрощения:
 
  * `1 == 1 second`
  * `1 minutes == 60 seconds`
@@ -25,80 +23,73 @@ unit and units are considered naively in the following way:
  * `1 weeks = 7 days`
  * `1 years = 365 days`
 
-Take care if you perform calendar calculations using these units, because
-not every year equals 365 days and not even every day has 24 hours
-because of `leap seconds <https://en.wikipedia.org/wiki/Leap_second>`_.
-Due to the fact that leap seconds cannot be predicted, an exact calendar
-library has to be updated by an external oracle.
+Будьте внимательны, если выполняете вычисления с календарем, используя эти единицы, потому что не каждый год содержит 365 дней и не каждые сутки 24 часа из-за `leap seconds <https://en.wikipedia.org/wiki/Leap_second>`_. Из-за того факта, что leap seconds невозможно предсказать, точную календарную библиотеку должен обновлять внешний оракул.
 
-These suffixes cannot be applied to variables. If you want to
-interpret some input variable in e.g. days, you can do it in the following way::
+Эти суффиксы невозможно применять к переменным. Если вы хотите интерпретировать некоторую входную переменную в днях (например), это можно сделать следующим образом::
 
     function f(uint start, uint daysAfter) {
       if (now >= start + daysAfter * 1 days) { ... }
     }
 
-Special Variables and Functions
-===============================
+Специальные переменные и функции
+================================
 
-There are special variables and functions which always exist in the global
-namespace and are mainly used to provide information about the blockchain.
+Есть специальные переменные и функции, которые всегда существуют в глобальном пространстве имен и используются в основном для предоставления информации о блокчейне.
 
 .. index:: block, coinbase, difficulty, number, block;number, timestamp, block;timestamp, msg, data, gas, sender, value, now, gas price, origin
 
 
-Block and Transaction Properties
-------------------------------------
+Свойства блока и транзакции
+---------------------------
 
- - `block.coinbase` (`address`): current block miner's address
- - `block.difficulty` (`uint`): current block difficulty
- - `block.gaslimit` (`uint`): current block gaslimit
- - `block.number` (`uint`): current block number
- - `block.blockhash` (`function(uint) returns (bytes32)`): hash of the given block - only for 256 most recent blocks
- - `block.timestamp` (`uint`): current block timestamp
- - `msg.data` (`bytes`): complete calldata
- - `msg.gas` (`uint`): remaining gas
- - `msg.sender` (`address`): sender of the message (current call)
- - `msg.sig` (`bytes4`): first four bytes of the calldata (i.e. function identifier)
- - `msg.value` (`uint`): number of wei sent with the message
- - `now` (`uint`): current block timestamp (alias for `block.timestamp`)
- - `tx.gasprice` (`uint`): gas price of the transaction
- - `tx.origin` (`address`): sender of the transaction (full call chain)
-
-.. note::
-    The values of all members of `msg`, including `msg.sender` and
-    `msg.value` can change for every **external** function call.
-    This includes calls to library functions.
-
-    If you want to implement access restrictions in library functions using
-    `msg.sender`, you have to manually supply the value of
-    `sg.sender` as an argument.
+ - `block.coinbase` (`address`): адрес майнера текущего блока
+ - `block.difficulty` (`uint`): сложность текущего блока
+ - `block.gaslimit` (`uint`): ограничение газа в текущем блоке
+ - `block.number` (`uint`): номер текущего блока
+ - `block.blockhash` (`function(uint) returns (bytes32)`): хеш текущего блока - только для 256 последних блоков
+ - `block.timestamp` (`uint`): временная метка текущего блока
+ - `msg.data` (`bytes`): полные данные вызова calldata-?
+ - `msg.gas` (`uint`): оставшийся газ
+ - `msg.sender` (`address`): отправитель сообщения (текущий вызов)
+ - `msg.sig` (`bytes4`): первые 4 байта calldata (т. е. идентификатор функции)
+ - `msg.value` (`uint`): количество wei, отправленное с сообщением
+ - `now` (`uint`): временная метка текущего блока (псевдоним для `block.timestamp`)
+ - `tx.gasprice` (`uint`): цена газа-? для транзакции
+ - `tx.origin` (`address`): отправитель трензакции (полная цепь вызовов)
 
 .. note::
-    The block hashes are not available for all blocks for scalability reasons.
-    You can only access the hashes of the most recent 256 blocks, all other
-    values will be zero.
+    Значения всех членов `msg`, включая `msg.sender` и
+    `msg.value`, могут изменяться для каждого **внешнего** вызова функции.
+    Это включает вызовы библиотеных функций.
+
+    Если вы хотите реализовать ограничения доступа в библиотечных функциях с помощью
+    `msg.sender`, вы должны вручную предоставить значение
+    `sg.sender` в качестве аргумента.
+
+.. note::
+    Хеши блоков доступны не для всех блоков по причинам масштабируемости.
+    Вам доступны только хеши последних 256 блоков, а все остальные
+    значения будут нулевыми.
 
 .. index:: sha3, ripemd160, sha256, ecrecover, addmod, mulmod, cryptography, this, super, selfdestruct, balance, send
 
-Mathematical and Cryptographic Functions
+Математические и криптографические функции
 ----------------------------------------
 
 `addmod(uint x, uint y, uint k) returns (uint)`:
-    compute `(x + y) % k` where the addition is performed with arbitrary precision and does not wrap around at `2**256`.
+    вычисляет `(x + y) % k`, где сложение выполняется с произвольной точностью и не wrap around at `2**256`.
 `mulmod(uint x, uint y, uint k) returns (uint)`:
-    compute `(x * y) % k` where the multiplication is performed with arbitrary precision and does not wrap around at `2**256`.
+    вычисляет `(x * y) % k`, при этом умножение выполняется с произвольной точностью и не wrap around at `2**256`.
 `sha3(...) returns (bytes32)`:
-    compute the Ethereum-SHA-3 hash of the (tightly packed) arguments
+    вычисляет хеш Ethereum-SHA-3 (плотно упакованных) аргументов
 `sha256(...) returns (bytes32)`:
-    compute the SHA-256 hash of the (tightly packed) arguments
+    вычисляет хеш SHA-256 (плотно упакованных) аргументов
 `ripemd160(...) returns (bytes20)`:
-    compute RIPEMD-160 hash of the (tightly packed) arguments
+    вычисляет хеш RIPEMD-160 (плотно упакованных) аргументов
 `ecrecover(bytes32, byte, bytes32, bytes32) returns (address)`:
-    recover public key from elliptic curve signature - arguments are (data, v, r, s)
+    восстанавливает открытый ключ из elliptic curve signature - принимает аргументы (data, v, r, s)
 
-In the above, "tightly packed" means that the arguments are concatenated without padding.
-This means that the following are all identical::
+Выше "плотно упакованный" означает, что аргументы кокатенированы без padding. Это означает, что все следующие вызовы идентичны::
 
     sha3("ab", "c")
     sha3("abc")
@@ -106,20 +97,19 @@ This means that the following are all identical::
     sha3(6382179)
     sha3(97, 98, 99)
 
-If padding is needed, explicit type conversions can be used: `sha3("\x00\x12")` is the
-same as `sha3(uint16(0x12))`.
+Если padding необходим, можно использовать явные преобразования типов: `sha3("\x00\x12")` - это то же самое, что и `sha3(uint16(0x12))`.
 
-It might be that you run into Out-of-Gas for `sha256`, `ripemd160` or `ecrecover` on a *private blockchain*. The reason for this is that those are implemented as so-called precompiled contracts and these contracts only really exist after they received the first message (although their contract code is hardcoded). Messages to non-existing contracts are more expensive and thus the execution runs into an Out-of-Gas error. A workaround for this problem is to first send e.g. 1 Wei to each of the contracts before you use them in your actual contracts. This is not an issue on the official or test net.
+Возможно, при выполнении функции `sha256`, `ripemd160` или `ecrecover` в *частном блокчейне* у вас закончится газ. Причина этого в том, что они реализованы как так называемые прекомпилированные контракты, которые на самом деле существуют только после получения первого сообщения (хотя их код контракта жестко закодирован). Сообщения несуществующим контрактам более дороги и, таким образом, выполнение доходит до ошибки исчерпания газа. Обходной способ решения этой проблемы - сначала отправить, например, 1 Wei каждому из контрактов, прежде чем использовать их в фактических контрактах. Этой проблемы нет в официальной или тестовой сети.
 
 .. index:: this, selfdestruct
 
 Contract Related
 ----------------
 
-`this` (current contract's type):
-    the current contract, explicitly convertible to `address`
+`this` (тип текущего контракта):
+    текущий контракт, явно преобразуемый в `address`
 `selfdestruct(address)`:
-    destroy the current contract, sending its funds to the given address
+    уничтожает текущий контракт, отправляя его средства по указанному адресу
 
-Furthermore, all functions of the current contract are callable directly including the current function.
+Кроме того, все функции текущего контракта, включая текущую функцию, are callable directly.
 
