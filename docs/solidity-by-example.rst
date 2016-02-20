@@ -1,148 +1,132 @@
 ###################
-Solidity by Example
+Примеры на Solidity
 ###################
 
 .. index:: voting, ballot
 
 .. _voting:
 
-******
-Voting
-******
+***********
+Голосование
+***********
 
-The following contract is quite complex, but showcases
-a lot of Solidity's features. It implements a voting
-contract. Of course, the main problems of electronic
-voting is how to assign voting rights to the correct
-persons and how to prevent manipulation. We will not
-solve all problems here, but at least we will show 
-how delegated voting can be done so that vote counting
-is **automatic and completely transparent** at the
-same time.
+Следующий контракт довольно сложен, но демонстрирует многие возможности Solidity. Он реализует контракт голосования. Конечно, главные проблемы электронного голосования - это как назначить права голосования правильным участникам и как предтвратить манипулирование. Мы не решим здесь все проблемы, но, по крайней мере, мы покажем, как можно выполнять делегированное голсование, чтобы подсчет голосов велся одновременно **автоматически и полностью прозрачно**.
 
-The idea is to create one contract per ballot,
-providing a short name for each option.
-Then the creator of the contract who serves as
-chairperson will give the right to vote to each
-address individually.
+Идея в том, чтобы создать один контракт на голосование, предоставляя короткое имя для каждого варианта. Затем создатель голосования, который играет роль chairperson, предоставит право голосовать каждому адресу по отдельности.
 
-The persons behind the addresses can then choose
-to either vote themselves or to delegate their
-vote to a person they trust.
+Люди, контролирующие адреса, затем могут выбрать или голосовать самим или делегировать свой голос человеку, которому они доверяют.
 
-At the end of the voting time, `winningProposal()`
-will return the proposal with the largest number
-of votes.
+В конце срока голосования функция `winningProposal()` возвращает предложение, набравшее наибольшее количество голосов.
 
 .. Gist: 618560d3f740204d46a5
 
 ::
 
-    /// @title Voting with delegation.
+    /// @title Голосование с делегированием.
     contract Ballot
     {
-        // This declares a new complex type which will
-        // be used for variables later.
-        // It will represent a single voter.
+        // Объявление нового сложного типа, который будет позже
+        // использован для хранения переменных.
+        // Он представляет одного избирателя.
         struct Voter
         {
-            uint weight; // weight is accumulated by delegation
-            bool voted;  // if true, that person already voted
-            address delegate; // person delegated to
-            uint vote;   // index of the voted proposal
+            uint weight; // вес, накопленный в результате делегирования
+            bool voted;  // если true, этот человек уже проголосовал
+            address delegate; // человек, которому этот избиратель делегировал голос
+            uint vote;   // индекс предложения, за которое был отдан голос
         }
-        // This is a type for a single proposal.
+        // Это тип одного предложения.
         struct Proposal
         {
-            bytes32 name;   // short name (up to 32 bytes)
-            uint voteCount; // number of accumulated votes
+            bytes32 name;   // краткое имя (до 32 байтов)
+            uint voteCount; // количество накопленных голосов
         }
 
         address public chairperson;
-        // This declares a state variable that
-        // stores a `Voter` struct for each possible address.
+        // Объявление переменной состояния, которая
+        // хранит структуру `Voter` для каждого возможного адреса.
         mapping(address => Voter) public voters;
-        // A dynamically-sized array of `Proposal` structs.
+        // Динамический массив структур `Proposal`.
         Proposal[] public proposals;
 
-        /// Create a new ballot to choose one of `proposalNames`.
+        /// Создание нового ballot для выбора одного из `proposalNames`.
         function Ballot(bytes32[] proposalNames)
         {
             chairperson = msg.sender;
             voters[chairperson].weight = 1;
-            // For each of the provided proposal names,
-            // create a new proposal object and add it
-            // to the end of the array.
+            // Для каждого из предоставленных названий предложений
+            // мы создаем новый объект предложения и добавляем его
+            // а концу массива.
             for (uint i = 0; i < proposalNames.length; i++)
-                // `Proposal({...})` creates a temporary
-                // Proposal object and `proposal.push(...)`
-                // appends it to the end of `proposals`.
+                // `Proposal({...})` создает временный объект
+                // Proposal, а `proposal.push(...)`
+                // присоединяет его к концу `proposals`.
                 proposals.push(Proposal({
                     name: proposalNames[i],
                     voteCount: 0
                 }));
         }
 
-        // Give `voter` the right to vote on this ballot.
-        // May only be called by `chairperson`.
+        // Предоставляем `voter` право голосовать в этом голосовании.
+        // Функцию может вызывать только `chairperson`.
         function giveRightToVote(address voter)
         {
             if (msg.sender != chairperson || voters[voter].voted)
-                // `throw` terminates and reverts all changes to
-                // the state and to Ether balances. It is often
-                // a good idea to use this if functions are
-                // called incorrectly. But watch out, this
-                // will also consume all provided gas.
+                // `throw` завершает и обращает все изменения состояния
+                // и балансов эфира. Часто разумно использовать
+                // такой прием, если функции
+                // вызываются неправильно. Но учтите, что это также потребит
+                // весь предоставленный газ.
                 throw;
             voters[voter].weight = 1;
         }
 
-        /// Delegate your vote to the voter `to`.
+        /// Делегирование голоса избирателю `to`.
         function delegate(address to)
         {
-            // assigns reference
+            // назначение ссылки
             Voter sender = voters[msg.sender];
             if (sender.voted)
                 throw;
-            // Forward the delegation as long as
-            // `to` also delegated.
+            // Перенаправление делегирования, если
+            // `to` также делегируется.
             while (voters[to].delegate != address(0) &&
                    voters[to].delegate != msg.sender)
                 to = voters[to].delegate;
-            // We found a loop in the delegation, not allowed.
+            // В делегировании обнаружен цикл, что не допускается.
             if (to == msg.sender)
                 throw;
-            // Since `sender` is a reference, this
-            // modifies `voters[msg.sender].voted`
+            // Поскольку `sender` является ссылкой, этот код
+            // изменяет `voters[msg.sender].voted`
             sender.voted = true;
             sender.delegate = to;
             Voter delegate = voters[to];
             if (delegate.voted)
-                // If the delegate already voted,
-                // directly add to the number of votes 
+                // Если делегат уже проголосовал,
+                // значение непосредственно добавляется к количеству голосов 
                 proposals[delegate.vote].voteCount += sender.weight;
             else
-                // If the delegate did not vote yet,
-                // add to her weight.
+                // Если делегат еще не голосовал,
+                // добавляется к его весу.
                 delegate.weight += sender.weight;
         }
 
-        /// Give your vote (including votes delegated to you)
-        /// to proposal `proposals[proposal].name`.
+        /// Отдать голос (включая голоса, делегированные вам)
+        /// за предложение `proposals[proposal].name`.
         function vote(uint proposal)
         {
             Voter sender = voters[msg.sender];
             if (sender.voted) throw;
             sender.voted = true;
             sender.vote = proposal;
-            // If `proposal` is out of the range of the array,
-            // this will throw automatically and revert all
-            // changes.
+            // Если `proposal` находится за пределами массива,
+            // этот код автоматически throw и обратит все
+            // изменения.
             proposals[proposal].voteCount += sender.weight;
         }
 
-        /// @dev Computes the winning proposal taking all
-        /// previous votes into account.
+        /// @dev Вычисляет победившее предложение, учитывая все
+        /// предыдущие голоса.
         function winningProposal() constant
                 returns (uint winningProposal)
         {
@@ -158,28 +142,21 @@ of votes.
         }
     }
 
-Possible Improvements
-=====================
+Возможные улучшения
+===================
 
-Currently, many transactions are needed to assign the rights
-to vote to all participants. Can you think of a better way?
+В настоящее время требуется выполнить много транзакций, чтобы назначить право голоса всем участникам. Можете ли вы придумать способ лучше?
 
 .. index:: auction;blind, auction;open, blind auction, open auction
 
-*************
-Blind Auction
-*************
+***************
+Аукцион вслепую
+***************
 
-In this section, we will show how easy it is to create a
-completely blind auction contract on Ethereum.
-We will start with an open auction where everyone
-can see the bids that are made and then extend this
-contract into a blind auction where it is not
-possible to see the actual bid until the bidding
-period ends.
+В этом разделе мы покажем, насколько легко в Эфириуме создать контракт полностью слепого аукциона. Мы начнем с открытого аукциона, в котором каждый может видеть ставки, и затем расширим этот контракт в слепой аукцион, в котором невозможно видеть фактическую ставку до завершения периода ставок.
 
-Simple Open Auction
-===================
+Простой открытый аукцион
+========================
 
 The general idea of the following simple auction contract
 is that everyone can send their bids during
