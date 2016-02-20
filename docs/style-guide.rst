@@ -1,56 +1,48 @@
 .. index:: style, coding style
 
 #############
-Style Guide
+Руководство по стилю
 #############
 
 ************
-Introduction
+Введение
 ************
 
-This guide is intended to provide coding conventions for writing solidity code.
-This guide should be thought of as an evolving document that will change over
-time as useful conventions are found and old conventions are rendered obsolete.
+В этом руководстве описаны конвенции написания кода Solidity. Руководство следует рассматривать как развивающийся документ, который будет изменяться со временем по мере обнаружения полезных конвенций и устаревания других.
 
-Many projects will implement their own style guides.  In the event of
-conflicts, project specific style guides take precedence.
+Во многих проектах будут использоваться свои руководства по стилю. В случае конфликтов приоритет должен отдаваться руковдоствам, специфичным для проекта.
 
-The structure and many of the recommendations within this style guide were
-taken from python's
-`pep8 style guide <https://www.python.org/dev/peps/pep-0008/>`_.
+Структура и многие из рекомендаций в этом руководстве были взяты из руководства по стилю Python `pep8 style guide <https://www.python.org/dev/peps/pep-0008/>`_.
 
-The goal of this guide is *not* to be the right way or the best way to write
-solidity code.  The goal of this guide is *consistency*.  A quote from python's
-`pep8 <https://www.python.org/dev/peps/pep-0008/#a-foolish-consistency-is-the-hobgoblin-of-little-minds>`_
-captures this concept well.
+Цель этого руководства - *не* представить правильный или лучший способ написания кода Solidity, а *согласованность*. Цитата из `pep8 <https://www.python.org/dev/peps/pep-0008/#a-foolish-consistency-is-the-hobgoblin-of-little-minds>`_ хорошо выражает эту идею.
 
-    A style guide is about consistency. Consistency with this style guide is important. Consistency within a project is more important. Consistency within one module or function is most important.
-    But most importantly: know when to be inconsistent -- sometimes the style guide just doesn't apply. When in doubt, use your best judgment. Look at other examples and decide what looks best. And don't hesitate to ask! 
+    Руководство по стилю касается согласованности. Согласованность в этом руководстве по стилю важна. Согласованность в проекте еще важнее. Наиболее важна согласованность в пределах модуля или функции.
+    Но самое важное - это знать, когда быть несогласованным -- иногда руководство по стилю просто неприменимо. Когда сомневаетесь, руководствуйтесь best judgment. Посмотрите на другие примеры и решите, что выглядит лучше. И спрашивайте, не колеблясь! 
 
 
 ***********
-Code Layout
+Макет кода
 ***********
 
 
-Indentation
+Отступы
 ===========
 
-Use 4 spaces per indentation level.
+Используйте 4 пробела на уровень отступа.
 
-Tabs or Spaces
+Табуляция или пробелы
 ==============
 
-Spaces are the preferred indentation method.
+Предпочтительным способом отступа являются пробелы.
 
-Mixing tabs and spaces should be avoided.
+Смешения знаков табуляции и пробелов следует избегать.
 
-Blank Lines
+Пустые строки
 ===========
 
-Surround top level declarations in solidity source with two blank lines.
+Окружайте объявления верхнего уровня в коде Solidity двумя пустыми строками.
 
-Yes::
+Да::
 
     contract A {
         ...
@@ -66,7 +58,7 @@ Yes::
         ...
     }
 
-No::
+Нет::
 
     contract A {
         ...
@@ -79,11 +71,11 @@ No::
         ...
     }
 
-Within a contract surround function declarations with a single blank line.
+Внутри контракта окружайте объявления функций одинарными пустыми строками.
 
-Blank lines may be omitted between groups of related one-liners (such as stub functions for an abstract contract)
+Пустые строки можно опускать между группами связанных однострочных функций (таких как функции-заглушки для абстрактного контракта)
 
-Yes::
+Да::
 
     contract A {
         function spam();
@@ -101,7 +93,7 @@ Yes::
         }
     }
 
-No::
+Нет::
 
     contract A {
         function spam() {
@@ -112,17 +104,17 @@ No::
         }
     }
 
-Source File Encoding
+Кодировка исходных файлов
 ====================
 
-UTF-8 or ASCII encoding is preferred.
+Предпочтительно использовать кодировку UTF-8 или ASCII.
 
-Imports
+Импорт
 ==========
 
-Import statements should always be placed at the top of the file.
+Выражения импорта всегда следует указывать в начале файла.
 
-Yes::
+Да::
 
     import "owned";
 
@@ -136,7 +128,7 @@ Yes::
         ...
     }
 
-No::
+Нет::
 
     contract A {
         ...
@@ -150,51 +142,48 @@ No::
         ...
     }
 
-Whitespace in Expressions
+Пустые места в выражениях
 =========================
 
-Avoid extraneous whitespace in the following  situations:
+Избегайте лишнего пустого места в следующих ситуациях:
 
-* Immediately inside parenthesis, brackets or braces.
+* Сразу же после.перед обычных, квадратных или фигурных скобок.
 
-Yes: `spam(ham[1], Coin({name: "ham"}));`
+Да: `spam(ham[1], Coin({name: "ham"}));`
 
-No: `spam( ham[ 1 ], Coin( { name: "ham" } ) );`
+Нет: `spam( ham[ 1 ], Coin( { name: "ham" } ) );`
 
-* Immediately before a comma, semicolon:
+* Непосредственно перед запятой и точкой с запятой:
 
-Yes: `function spam(uint i, Coin coin);` 
+Да: `function spam(uint i, Coin coin);` 
 
-No: `function spam(uint i , Coin coin) ;`
+Нет: `function spam(uint i , Coin coin) ;`
 
-* More than one space around an assignment or other operator to align with
-  another:
+* Более одного пробела вокруг присваивания или другого оператора для выравнивания с другим:
 
-Yes::
+Да::
 
     x = 1;
     y = 2;
     long_variable = 3;
 
-No::
+Нет::
 
     x             = 1;
     y             = 2;
     long_variable = 3;
 
 
-Control Structures
+Управляющие структуры
 ==================
 
-The braces denoting the body of a contract, library, functions and structs
-should:
+Фигурные скобки, обозначающие тело контракта, библиотеки, функции или структуры, следует:
 
-* open on the same line as the declaration
-* close on their own line at the same indentation level as the beginning of the
-  declaration.
-* The opening brace should be proceeded by a single space.
+* открывать на той же строке, что и объявление
+* закрывать на отдельной строке с тем же уровнем отступа, что и в начале объявления.
+* открывающей фигурной скобке должен предшествовать один пробел.
 
-Yes::
+Да::
 
     contract Coin {
         struct Bank {
@@ -203,7 +192,7 @@ Yes::
         }
     }
 
-No::
+Нет::
 
     contract Coin
     {
@@ -213,15 +202,11 @@ No::
         }
     }
 
-The same recommendations apply to the control structures `if`, `else`, `while`,
-and `for`.
+Те же рекомендации относятся к управляющим структурам `if`, `else`, `while` и `for`.
 
-Additionally there should be a single space between the control structures
-`if`, `while`, and `for` and the parenthetic block representing the
-conditional, as well as a single space between the conditional parenthetic
-block and the opening brace.
+Кроме того, должен быть один пробел между управляющими структурами `if`, `while` и `for` и скобочным блоком, представляющим условие, а также один пробел между условием в скобках и открывающей фигурной скобкой.
 
-Yes::
+Да::
 
     if (...) {
         ...
@@ -231,7 +216,7 @@ Yes::
         ...
     }
 
-No::
+Нет::
 
     if (...)
     {
@@ -244,15 +229,14 @@ No::
     for (...) {
         ...;}
 
-For control structures who's body contains a single statement, omitting the
-braces is ok *if* the statement is contained on a single line.
+Для управляющих структур, тело которых содержит один оператор, можно опускать фигурные скобки, *если* оператор содержится на одной строке.
 
-Yes::
+Да::
 
     if (x < 10)
         x += 1;
 
-No::
+Нет::
 
     if (x < 10)
         someArray.push(Coin({
@@ -260,12 +244,9 @@ No::
             value: 42
         }));
 
-For `if` blocks which have an `else` or `else if` clause, the `else` should be
-placed on it's own line following the previous closing parenthesis.  The
-parenthesis for the else block should follow the same rules as the other
-conditional control structures.
+Для блоков `if` с предложением `else` или `else if` предложение `else` должно находиться на отдельной строке, следуя за предыдущей закрывающей скобкой. Скобки блока else должна соответствовать тем же правилам, что и другие условные управляющие структуры.
 
-Yes::
+Да::
 
     if (x < 3) {
         x += 1;
@@ -280,7 +261,7 @@ Yes::
     else
         x -= 1;
 
-No::
+Нет::
 
     if (x < 3) {
         x += 1;
@@ -288,18 +269,16 @@ No::
         x -= 1;
     }
 
-Function Declaration
+Объявление функции
 ====================
 
-For short function declarations, it is recommended for the opening brace of the
-function body to be kept on the same line as the function declaration.
+В случае объявлений коротких функций рекомендуется указывать открывающую фигурную скобку тела функции на той же строке, что и обявление функции.
 
-The closing brace should be at the same indentation level as the function
-declaration.
+Закрывающую фигурную скобку следует вводить на том же уровне отступа, на котором находится объявление функции.
 
-The opening brace should be preceeded by a single space.
+Открывающей фигурной скобе должен предшествовать один пробел.
 
-Yes::
+Да::
 
     function increment(uint x) returns (uint) {
         return x + 1;
@@ -309,7 +288,7 @@ Yes::
         return x + 1;
     }
 
-No::
+Нет::
 
     function increment(uint x) returns (uint)
     {
@@ -327,27 +306,23 @@ No::
     function increment(uint x) returns (uint) {
         return x + 1;}
 
-The visibility modifiers for a function should come before any custom
-modifiers.
+Модификаторы видимости функции следует указывать перед любыми пользовательскими модификаторами.
 
-Yes::
+Да::
 
     function kill() public onlyowner {
         selfdestruct(owner);
     }
 
-No::
+Нет::
 
     function kill() onlyowner public {
         selfdestruct(owner);
     }
 
-For long function declarations, it is recommended to drop each arguent onto
-it's own line at the same indentation level as the function body.  The closing
-parenthesis and opening bracket should be placed on their own line as well at
-the same indentation level as the function declaration.
+В случае объявления длинных функций рекомендуется располагать каждый аргумент на отдельной строке на том же уровне отступа, что и тело функции. Закрывающая скобка и открывающая фигурная скобка должны находиться на отдельной строке на том же уровне отступа, что и объявление функции.
 
-Yes::
+Да::
 
     function thisFunctionHasLotsOfArguments(
         address a,
@@ -360,7 +335,7 @@ Yes::
         do_something;
     }
 
-No::
+Нет::
 
     function thisFunctionHasLotsOfArguments(address a, address b, address c,
         address d, address e, address f) {
@@ -386,10 +361,9 @@ No::
         do_something;
     }
 
-If a long function declaration has modifiers, then each modifier should be
-dropped to it's own line.
+Если объявление длинной функции имеет модификкаторы, каждый модификатор следует указать на отдельной строке.
 
-Yes::
+Да::
 
     function thisFunctionNameIsReallyLong(address x, address y, address z)
         public
@@ -413,7 +387,7 @@ Yes::
         do_something;
     }
 
-No::
+Нет::
 
     function thisFunctionNameIsReallyLong(address x, address y, address z)
                                           public
@@ -437,11 +411,9 @@ No::
         do_something;
     }
 
-For constructor functions on inherited contracts who's bases require arguments,
-it is recommended to drop the base constructors onto new lines in the same
-manner as modifiers if the function declaration is long or hard to read.
+Для функций-конструкторов унаследованных контрактов, базовый контракт которых нуждается в аргументах, рекомендуется указывать базовые конструкторы на отдельных строках в той же манере, что и модификаторы, если объявление функции слишком длинно или трудно для чтения.
 
-Yes::
+Да::
 
     contract A is B, C, D {
         function A(uint param1, uint param2, uint param3, uint param4, uint param5)
@@ -449,11 +421,11 @@ Yes::
             C(param2, param3)
             D(param4)
         {
-            // do something with param5
+            // какие-то действия с param5
         }
     }
 
-No::
+Нет::
 
     contract A is B, C, D {
         function A(uint param1, uint param2, uint param3, uint param4, uint param5)
@@ -461,7 +433,7 @@ No::
         C(param2, param3)
         D(param4)
         {
-            // do something with param5
+            // какие-то действия с param5
         }
     }
 
@@ -470,60 +442,54 @@ No::
             B(param1)
             C(param2, param3)
             D(param4) {
-            // do something with param5
+            // какие-то действия с param5
         }
     }
 
 
-These guidelines for function declarations are intended to improve readability.
-Authors should use their best judgement as this guide does not try to cover all
-possible permutations for function declarations.
+Эти принципы объявления функций призваны сделать код более удобочитаемым. Авторам следует использовать best judgement, поскольку это руководство не пытается охватить все возможные пермутации объявлений функций.
 
-Mappings
+Отображения
 ========
 
 TODO
 
-Variable Declarations
+Объявления переменных
 =====================
 
-Declarations of array variables should not have a space between the type and
-the brackets.
+Объявления переменных-массивов следует вводить без пробела между типом и квадратными скобками.
 
-Yes: `uint[] x;`
-No:  `uint [] x;`
+Да: `uint[] x;`
+Нет:  `uint [] x;`
 
-Other Recommendations
+Другие рекомендации
 =====================
 
-* Surround operators with a single space on either side.
+* Заключайте операторы в одинарные пробелы с обеих сторон.
 
-Yes::
+Да::
 
     x = 3;
     x = 100 / 10;
     x += 3 + 4;
     x |= y && z;
 
-No::
+Нет::
 
     x=3;
     x = 100/10;
     x += 3+4;
     x |= y&&z;
 
-* Operators with a higher priority than others can exclude surrounding
-  whitespace in order to denote precedence.  This is meant to allow for
-  improved readability for complex statement. You should always use the same
-  amount of whitespace on either side of an operator:
+* Операторы с более высоким приоритетом, чем у остальных, могут исключать окружающее пустое место для обозначения приоритета. Это делается, чтобы улучшить чтение сложных операторов. Вам всегда следует использовать одинаковый объем пустого места с обеих сторон оператора:
 
-Yes::
+Да::
 
     x = 2**3 + 5;
     x = 2*y + 3*z;
     x = (a+b) * (a-b);
 
-No::
+Нет::
 
     x = 2** 3 + 5;
     x = y+z;
@@ -531,26 +497,20 @@ No::
 
 
 ******************
-Naming Conventions
+Конвенции именования
 ******************
 
-Naming conventions are powerful when adopted and used broadly.  The use of
-different conventions can convey significant *meta* information that would
-otherwise not be immediately available.
+Конвенции именования - мощное средство, если оно принято и широко используется. Использование разных конвенций может доносить значимую *мета*-информацию, которая в противном случае не является немедленно доступной.
 
-The naming recommendations given here are intended to improve the readability,
-and thus they are not rules, but rather guidelines to try and help convey the
-most information through the names of things.
+Рекомендации по именованию, приведенные здесь, призваны облегчить чтение, так что это не правила, а рекомендации, которые направлены на донесение большего объема информации с помощью имен.
 
-Lastly, consistency within a codebase should always supercede any conventions
-outlined in this document.
+Наконец, согласованность в пределах базы кода всегда должна ставиться выше, чем любые конвенции в этом документе.
 
 
-Naming Styles
+Стили именования
 =============
 
-To avoid confusion, the following names will be used to refer to different
-naming styles.
+Во избежание замешательства мы будем использовать следующие названия разных стилей именования.
 
 * ``b`` (single lowercase letter)
 * ``B`` (single uppercase letter)
@@ -562,74 +522,70 @@ naming styles.
 * ``mixedCase`` (differs from CapitalizedWords by initial lowercase character!)
 * ``Capitalized_Words_With_Underscores``
 
-.. note:: When using abbreviations in CapWords, capitalize all the letters of the abbreviation. Thus HTTPServerError is better than HttpServerError.
+.. note:: При использовании аббревиатур в CapWords делайте все буквы аббревиатуры заглавными. Таким образом, HTTPServerError лучше, чем HttpServerError.
 
 
-Names to Avoid
+Имена, которых следует избегать
 ==============
 
 * ``l`` - Lowercase letter el
 * ``O`` - Uppercase letter oh
 * ``I`` - Uppercase letter eye
 
-Never use any of these for single letter variable names.  They are often
-indistinguishable from the numerals one and zero.
+Никогда не используйте эти имена переменных из одной буквы. Их трудно отличить от чисел 1 и 0.
 
 
-Contract and Library Names
+Имена контрактов и библиотек
 ==========================
 
-Contracts should be named using the CapWords style.
+Контракты следует называть в стиле CapWords.
 
 
-Events
+События
 ======
 
-Events should be named using the CapWords style.
+События следует именовать в стиле CapWords.
 
 
-Function Names
+Имена функций
 ==============
 
-Functions should use mixedCase.
+С именами функций следует использовать формат mixedCase.
 
 
-Function Arguments
+Аргументы функций
 ==================
 
-When writing library functions that operate on a custom struct, the struct
-should be the first argument and should always be named ``self``.
+При написании библиотечных функций, работающих с пользовательской структурой, структура должна быть первым аргументом и всегда должна называться ``self``.
 
 
-Local and State Variables
+Локальные переменные и переменные состояния
 =========================
 
-Use mixedCase.
+Используйте стиль mixedCase.
 
 
-Constants
+Константы
 =========
 
-Constants should be named with all capital letters with underscores separating
-words.  (for example:``MAX_BLOCKS``)
+Константы следует именовать всеми заглавными буквами со знаками подчеркивания для разделения слов (например, ``MAX_BLOCKS``).
 
 
-Modifiers
+Модификаторы
 =========
 
-Function modifiers should use lowercase words separated by underscores.
+Модификаторы функций должны быть словами в нижнем регистре, разделенными знаками подчеркивания.
 
 
-Avoiding Collisions
+Избегание коллизий
 ===================
 
 * ``single_trailing_underscore_``
 
-This convention is suggested when the desired name collides with that of a
-built-in or otherwise reserved name.
+Если желаемое имя конфликтует со встроенным или иначе зарезервированным именем, рекомендуется использовать эту конвенцию.
 
 
-General Recommendations
+Общие рекомендации
 =======================
 
 TODO
