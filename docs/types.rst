@@ -1,72 +1,65 @@
 .. index:: type
 
-*****
-Types
-*****
+****
+Типы
+****
 
-Solidity is a statically typed language, which means that the type of each
-variable (state and local) needs to be specified (or at least known -
-see :ref:`type-deduction` below) at
-compile-time. Solidity provides several elementary types which can be combined
-to complex types.
+Solidity - это статически типизированный язык, т. е. тип каждой переменной (состояния и локальной) должен быть указан (или, по крайней мере, известен - см. ниже :ref:`type-deduction`) во время компиляции. Solidity предоставляет несколько элементарных типов, которые можно объединять в сложные типы.
 
 .. index:: ! value type, ! type;value
 
-Value Types
-===========
+Типы-значения
+=============
 
-The following types are also called value types because variables of these
-types will always be passed by value, i.e. they are always copied when they
-are used as function arguments or in assignments.
+Описанные ниже типы также называются типами-значениями, потому что переменные этих типов всегда передаются по значению, т. е. всегда копируются, когда используются как аргументы функций или в операциях присваивания.
 
 .. index:: ! bool, ! true, ! false
 
-Booleans
---------
+Булев тип
+---------
 
-`bool`: The possible values are constants `true` and `false`.
+`bool`: возможные значения - константы `true` и `false`.
 
-Operators:  
+Операторы:  
 
-*  `!` (logical negation)
-*  `&&` (logical conjunction, "and")
-*  `||` (logical disjunction, "or")
-*  `==` (equality)
-*  `!=` (inequality)
+*  `!` (логическое отрицание)
+*  `&&` (логическая конъюнкция, "И")
+*  `||` (логическая дизъюнкция, "ИЛИ")
+*  `==` (проверка на равенство)
+*  `!=` (проверка на неравенство)
 
-The operators `||` and `&&` apply the common short-circuiting rules. This means that in the expression `f(x) || g(y)`, if `f(x)` evaluates to `true`, `g(y)` will not be evaluated even if it may have side-effects.
+Операторы `||` и `&&` поддерживают популярные short-circuiting правила. Это означает, что, если в выражении `f(x) || g(y)` функция `f(x)` оценивается в `true`, `g(y)` не будет оцениваться, даже если она может иметь побочные эффекты.
 
 .. index:: ! uint, ! int, ! integer
 
-Integers
---------
+Целочисленные типы
+------------------
 
-`int•` / `uint•`: Signed and unsigned integers of various sizes. Keywords `uint8` to `uint256` in steps of `8` (unsigned of 8 up to 256 bits) and `int8` to `int256`. `uint` and `int` are aliases for `uint256` and `int256`, respectively.
+`int•` / `uint•`: знаковые и беззнаковые целые числа разных размеров. Ключевые слова от `uint8` до `uint256` с шагом `8` (unsigned от 8 до 256 бит) и от `int8` до `int256`. `uint` и `int` - это псевдонимы типов `uint256` и `int256` соответственно.
 
-Operators:  
+Операторы:  
 
-* Comparisons: `<=`, `<`, `==`, `!=`, `>=`, `>` (evaluate to `bool`)  
-* Bit operators: `&`, `|`, `^` (bitwise exclusive or), `~` (bitwise negation)  
-* Arithmetic operators: `+`, `-`, unary `-`, unary `+`, `*`, `/`, `%` (remainder), `**` (exponentiation)
+* Сравнения: `<=`, `<`, `==`, `!=`, `>=`, `>` (оценивается в `bool`)  
+* Поразрядные: `&`, `|`, `^` (поразрядное исключающее "ИЛИ"), `~` (поразрядное отрицание)  
+* Арифметические: `+`, `-`, унарный `-`, унарный `+`, `*`, `/`, `%` (остаток), `**` (возведение в степень)
 
 .. index:: address, balance, send, call, callcode
 
-Address
--------
+Адрес
+-----
 
-`address`: Holds a 20 byte value (size of an Ethereum address). Address types also have members(see [Functions on addresses](#functions-on-addresses)) and serve as base for all contracts.
+`address`: содержит 20-байтовое значение (размер адреса Ethereum). Типы адресов также имеют члены (см. [Функции для работы с адресами](#functions-on-addresses)) и служат основой (базовыми-?) всех контрактов.
 
-Operators:  
+Операторы:  
 
 * `<=`, `<`, `==`, `!=`, `>=` and `>`
 
-Members of Addresses
-^^^^^^^^^^^^^^^^^^^^
+Члены адресов
+^^^^^^^^^^^^^
 
-* `balance` and `send`
+* `balance` и `send`
 
-It is possible to query the balance of an address using the property `balance`
-and to send Ether (in units of wei) to an address using the `send` function:
+Можно запросить баланс адреса с помощью свойства `balance` и отправить эфир (в веях) на адрес с помощью функции `send`:
 
 ::
 
@@ -74,13 +67,12 @@ and to send Ether (in units of wei) to an address using the `send` function:
     address myAddress = this;
     if (x.balance < 10 && myAddress.balance >= 10) x.send(10);
 
-.. note::
-    If `x` is a contract address, its code (more specifically: its fallback function, if present) will be executed together with the `send` call (this is a limitation of the EVM and cannot be prevented). If that execution runs out of gas or fails in any way, the Ether transfer will be reverted. In this case, `send` returns `false`.
+.. примечание::
+    Если `x` - адрес контракта, его код (точнее говоря, его fallback function, если таковая имеется) будет выполнен вместе с вызовом `send` (это ограничение EVM, которое невозможно обойти). Если это выполнение исчерпывает газ или завершается неудачей по иной причине, перевод эфира обращается. В данном случае `send` возвращает `false`.
 
-* `call` and `callcode`
+* `call` и `callcode`
 
-Furthermore, to interface with contracts that do not adhere to the ABI,
-the function `call` is provided which takes an arbitrary number of arguments of any type. These arguments are padded to 32 bytes and concatenated. One exception is the case where the first argument is encoded to exactly four bytes. In this case, it is not padded to allow the use of function signatures here.
+Для взаимодействия с контрактами, которые не соблюдают ABI, предоставляется функция `call`, которая принимает произвольное количество аргументов любого типа. Эти аргументы дополняются до 32 байтов и конкатенируются. Одно исключение имеет место, когда первый аргумент кодируется точно в 4 байта. В этом случае оно не дополняется, чтобы позволить использовать здесь сигнатуры функций.
 
 ::
 
@@ -88,69 +80,68 @@ the function `call` is provided which takes an arbitrary number of arguments of 
     nameReg.call("register", "MyName");
     nameReg.call(bytes4(sha3("fun(uint256)")), a);
 
-`call` returns a boolean indicating whether the invoked function terminated (`true`) or caused an EVM exception (`false`). It is not possible to access the actual data returned (for this we would need to know the encoding and size in advance).
+`call` возвращает булево значение, указывающее, завершилась ли вызванная функция (`true`) или же она вызвала исключение EVM (`false`). Получить доступ к фактическим возвращенным даным невозможно (для этого нам потребовалось бы заблаговременно знать кодировку и размер).
 
-In a similar way, the function `callcode` can be used: The difference is that only the code of the given address is used, all other aspects (storage, balance, ...) are taken from the current contract. The purpose of `callcode` is to use library code which is stored in another contract. The user has to ensure that the layout of storage in both contracts is suitable for callcode to be used.
+Подобным образом можно использовать функцию `callcode`: разница в том, что используется только код конкретного адреса, а все остальные аспекты (хранилище, баланс, ...) берутся из текущего контракта. Назначение `callcode` - использовать библиотечный код, который хранится в другом контракте. Пользователь должен гарантировать, что формат хранилища в обоих контрактах подходит для использования в callcode.
 
-Both `call` and `callcode` are very low-level functions and should only be used as a *last resort* as they break the type-safety of Solidity.
+И `call`, и `callcode` - очень низкоуровневые функции, которые следует использовать только как *last resort*, поскольку они нарушают безопасность типов Solidity.
 
-.. note::
-    All contracts inherit the members of address, so it is possible to query the balance of the
-    current contract using `this.balance`.
+.. примечание::
+    Все контракты наследуют члены address, так что можно запрашивать баланс
+    текущего контракта с помощью `this.balance`.
 
 .. index:: byte array, bytes32
 
 
-Fixed-size byte arrays
-----------------------
+Байтовые массивы фиксированного размера
+---------------------------------------
 
-`bytes1`, `bytes2`, `bytes3`, ..., `bytes32`. `byte` is an alias for `bytes1`.  
+`bytes1`, `bytes2`, `bytes3`, ..., `bytes32`. `byte` - это псевдоним для `bytes1`.  
 
-Operators:  
+Операторы:  
 
-* Comparisons: `<=`, `<`, `==`, `!=`, `>=`, `>` (evaluate to `bool`)  
-* Bit operators: `&`, `|`, `^` (bitwise exclusive or), `~` (bitwise negation)  
-* Index access: If `x` is of type `bytesI`, then `x[k]` for `0 <= k < I` returns the `k` th byte (read-only).
+* Сравнения: `<=`, `<`, `==`, `!=`, `>=`, `>` (оценивается в `bool`)  
+* Поразрядные: `&`, `|`, `^` (поразрядное исключающее "ИЛИ"), `~` (поразрядное отрицание)  
+* Индексного доступа: если `x` имеет тип `bytesI`, то `x[k]` для `0 <= k < I` возвращает k-й байт (только для чтения).
 
-Members:
+Члены:
 
-* `.length` yields the fixed length of the byte array (read-only).
+* `.length` возвращает фиксированную длину массива байтов (только для чтения).
 
-Dynamically-sized byte array
-----------------------------
+Динамический массив байтов
+--------------------------
 
 `bytes`:
-    Dynamically-sized byte array, see :ref:`arrays`. Not a value-type!  
+    байтовый массив динамического размера, см. :ref:`arrays`. Не тип-значение!  
 `string`:
-    Dynamically-sized UTF8-encoded string, see :ref:`arrays`. Not a value-type!
+    строка динамического размера в кодировке UTF8, см. :ref:`arrays`. Не тип-значение!
 
-As a rule of thumb, use `bytes` for arbitrary-length raw byte data and `string`
-for arbitrary-length string (utf-8) data. If you can limit the length to a certain
-number of bytes, always use one of `bytes1` to `bytes32` because they are much cheaper.
+На практике используйте `bytes` для необработанных байтовых данных произвольной длины и `string`
+для строковых (utf-8) данных произвольной длины. Если вы можете ограничить длину определенным количеством байтов,
+всегда используйте один из интервала от `bytes1` до `bytes32`, потому что они гораздо дешевле.
 
 .. index:: literal, literal;integer
 
-Integer Literals
------------------
+Целочисленные литералы
+----------------------
 
-Integer Literals are arbitrary precision integers until they are used together with a non-literal. In `var x = 1 - 2;`, for example, the value of `1 - 2` is `-1`, which is assigned to `x` and thus `x` receives the type `int8` -- the smallest type that contains `-1`, although the natural types of `1` and `2` are actually `uint8`.    
+Целочисленные литералы - это целые числа произвольной точности, пока они не используются вместе с нелитералом. Например, в `var x = 1 - 2;` значением `1 - 2` является `-1`, которое назначается `x`, и, таким образом, `x` получает тип `int8` -- наименьший тип, содержащий `-1`, хотя естественным типом `1` и `2` на самом деле является `uint8`.    
 
-It is even possible to temporarily exceed the maximum of 256 bits as long as only integer literals are used for the computation: `var x = (0xffffffffffffffffffff * 0xffffffffffffffffffff) * 0;` Here, `x` will have the value `0` and thus the type `uint8`.
+Можно даже временно превысить максимум в 256 бит, если для вычисления используются только целочисленные литералы: `var x = (0xffffffffffffffffffff * 0xffffffffffffffffffff) * 0;` Здесь `x` получит значение `0` и, таким образом, тип `uint8`.
 
 .. index:: literal, literal;string, string
 
-String Literals
----------------
+Строковые литералы
+------------------
 
-String Literals are written with double quotes (`"abc"`). As with integer literals, their type can vary, but they are implicitly convertible to `bytes•` if they fit, to `bytes` and to `string`.
+Строковые литералы записываются в двойных кавычках (`"abc"`). Как и с целочисленными литералами, их тип может различаться, но они неявно конвертируемы в `bytes•`, если помещаются, в `bytes` и в `string`.
 
 .. index:: enum
 
-Enums
-=====
+Перечисления
+============
 
-Enums are one way to create a user-defined type in Solidity. They are explicitly convertible
-to and from all integer types but implicit conversion is not allowed.
+Перечисления - это единственный способ создать в Solidity пользовательский тип. Они явно конвертируемы во все целочисленные типы и обратно, но неявное преобразование не разрешается.
 
 ::
 
@@ -162,11 +153,11 @@ to and from all integer types but implicit conversion is not allowed.
         {
             choice = ActionChoices.GoStraight;
         }
-        // Since enum types are not part of the ABI, the signature of "getChoice"
-        // will automatically be changed to "getChoice() returns (uint8)"
-        // for all matters external to Solidity. The integer type used is just
-        // large enough to hold all enum values, i.e. if you have more values,
-        // `uint16` will be used and so on.
+        // Поскольку типы-перечисления не являются частью ABI, сигнатура "getChoice"
+        // автоматически будет изменена на "getChoice() returns (uint8)" для всех дел,
+        // внешних по отношению к Solidity. Используемый целочисленный тип как раз достаточно
+        // велик, чтобы содержать все значения перечисления, т. е., если у вас больше значений,
+        // будет использовано `uint16` и т. д.
         function getChoice() returns (ActionChoices)
         {
             return choice;
@@ -179,160 +170,133 @@ to and from all integer types but implicit conversion is not allowed.
 
 .. index:: ! type;reference, ! reference type, storage, memory, location, array, struct
 
-Reference Types
-==================
+Ссылочные типы
+==============
 
-Complex types, i.e. types which do not always fit into 256 bits have to be handled
-more carefully than the value-types we have already seen. Since copying
-them can be quite expensive, we have to think about whether we want them to be
-stored in **memory** (which is not persisting) or **storage** (where the state
-variables are held).
+Сложные типы, т. е. типы, которые не всегда помещаются в 256 бит, необходимо обрабатывать более внимательно, чем типы-значения, которые мы уже видели. Поскольку копировать их довольно дорого, мы должны подумать о том, хотим ли мы хранить их в **памяти** (не персистентной) или в **хранилище** (где хранятся переменные состояния).
 
-Data location
--------------
+Расположение данных
+-------------------
 
-Every complex type, i.e. *arrays* and *structs*, has an additional
-annotation, the "data location", about whether it is stored in memory or in storage. Depending on the
-context, there is always a default, but it can be overridden by appending
-either `storage` or `memory` to the type. The default for function parameters (including return parameters) is `memory`, the default for local variables is `storage` and the location is forced
-to `storage` for state variables (obviously).
+Каждый сложный тип, т. е. *arrays* и *structs*, имеет дополнительную аннотацию, "расположение данных", которая указывает, хранится ли он в памяти или хранилище. В зависимости от контектса всегда есть значение по умолчанию, но его можно переопределить, добавив к типу `storage` или `memory`. Для параметров функций (включая возвращаемые параметры) значением по умолчанию является `memory`, для локальных переменных - хранилище, и для переменных состояния форсируется расположение хранилище (очевидно).
 
-There is also a third data location, "calldata", which is a non-modifyable
-non-persistent area where function arguments are stored. Function parameters
-(not return parameters) of external functions are forced to "calldata" and
-it behaves mostly like memory.
+Есть также третье расположение данных, "calldata", которое представляет собой неизменяемую неперсистентную область, в которой хранятся аргументы функции. Параметры функци (не возвращаемые параметры) внешних функций форсирутся в "calldata" и в этом случае все работает в основном память.
 
-Data locations are important because they change how assignments behave:
-Assignments between storage and memory and also to a state variable (even from other state variables)
-always create an independent copy.
-Assignments to local storage variables only assign a reference though, and
-this reference always points to the state variable even if the latter is changed
-in the meantime.
-On the other hand, assignments from a memory stored reference type to another
-memory-stored reference type does not create a copy.
+Расположения данных важны потому, что они изменяют работу присваиваний:
+Присваивания междуд хранилищем и памятью и переменным состояния (даже из других переменных состояния) всегда приводят к созданию независимой копии.
+Присваивания локальным переменным в хранилище, однако, присваивают только ссылку, и эта ссылка всегда указывает на переменную состояния, даже если она тем временем изменяется.
+С другой стороны, присваивания из хранящегося в памяти ссылочного типа другому хранящемуся в памяти ссылочному типу не создают копию.
 
 ::
 
     contract c {
-      uint[] x; // the data location of x is storage
-      // the data location of memoryArray is memory
+      uint[] x; // значение x располагается в хранилище
+      // расположение данных memoryArray - память
       function f(uint[] memoryArray) {
-        x = memoryArray; // works, copies the whole array to storage
-        var y = x; // works, assigns a pointer, data location of y is storage
-        y[7]; // fine, returns the 8th element
-        y.length = 2; // fine, modifies x through y
-        delete x; // fine, clears the array, also modifies y
-        // The following does not work; it would need to create a new temporary /
-        // unnamed array in storage, but storage is "statically" allocated:
+        x = memoryArray; // работает, копирует весь массив в хранилище
+        var y = x; // работает, назначает указатель, расположение данных y - хранилище
+        y[7]; // отлично, возвращает 8-й элемент
+        y.length = 2; // отлично, изменяет x через y
+        delete x; // отлично, очищает массив, также изменяет y
+        // Следующий код не работает; ему потребовалось бы создать новый временный /
+        // безымянный массив в хранилище, но хранилище выделяется "статически":
         // y = memoryArray;
-        // This does not work either, since it would "reset" the pointer, but there
-        // is no sensible location it could point to.
+        // Это также не работает, поскольку он "сбросил" бы указатель, но нет
+        // осмысленного расположения, куда он мог бы указывать.
         // delete y;
-        g(x); // calls g, handing over a reference to x
-        h(x); // calls h and creates an independent, temporary copy in memory
+        g(x); // вызывает g, передавая ссылку на x
+        h(x); // вызывает h и создает независимую временную копию в памяти
       }
       function g(uint[] storage storageArray) internal {}
       function h(uint[] memoryArray) {}
     }
 
-Summary
-^^^^^^^
+Сводка
+^^^^^^
 
-Forced data location:
- - parameters (not return) of external functions: calldata
- - state variables: storage
+Форсированное расположение данных:
+ - параметры (не возвращаемые) внешних функций: calldata
+ - переменные состояния: хранилище
 
-Default data location:
- - parameters (also return) of functions: memory
- - all other local variables: storage
+Расположение данных по умолчанию:
+ - параметры (также возвращаемые) функций: память
+ - все другие локальные переменные: хранилище
 
 .. index:: ! array
 
 .. _arrays:
 
-Arrays
-------
+Массивы
+-------
 
-Arrays can have a compile-time fixed size or they can be dynamic.
-For storage arrays, the element type can be arbitrary (i.e. also other
-arrays, mappings or structs). For memory arrays, it cannot be a mapping and
-has to be an ABI type if it is an argument of a publicly-visible function.
+Массивы могут иметь размер, фиксируемый во время компиляции, или динамический. Для массивов в хранилище тип элемента может быть произвольным (т. е. другими массивами, отображениями или структурами). Массивы в памяти не могут иметь элементы отображения и должны иметь тип ABI, если он является аргументом общедоступно видимой функции.
 
-An array of fixed size `k` and element type `T` is written as `T[k]`,
-an array of dynamic size as `T[]`. As an example, an array of 5 dynamic
-arrays of `uint` is `uint[][5]` (note that the notation is reversed when
-compared to some other languages). To access the second uint in the
-third dynamic array, you use `x[2][1]` (indices are zero-based and
-access works in the opposite way of the declaration, i.e. `x[2]`
-shaves off one level in the type from the right).
+Массив фиксированного размера `k` с элементами типа `T` записывается как `T[k]`, массив динамического размера - как `T[]`. Например, массив из 5 динамических массивов типа `uint` будет `uint[][5]` (обратите внимание на нотацию, обратную в сравнении с некоторыми языками). Для доступа ко второму значению uint в третьем динамическом массиве вы использовали бы код `x[2][1]` (индексы отсчитываются от нуля, и доступ работает противоположно объявлению, т. е. `x[2]` снимает один уровень в типе справа).
 
-Variables of type `bytes` and `string` are special arrays. A `bytes` is similar to `byte[]`,
-but it is packed tightly in calldata. `string` is equal to `bytes` but does not allow
-length or index access (for now).
+Переменные типов `bytes` и `string` являются специальными массивами. `bytes` похож на `byte[]`, но он плотно упакован в calldata. `string` эквивалентен `bytes`, но не разрешает доступ к длине или по индексу (пока).
 
-So `bytes` should always be preferred over `byte[]` because it is cheaper.
+Таким образом, `bytes` следует всегда предпочитать варианту `byte[]`, потому что он дешевле.
 
-.. note::
-    If you want to access the byte-representation of a string `s`, use
-    `bytes(s).length` / `bytes(s)[7] = 'x';`. Keep in mind
-    that you are accessing the low-level bytes of the utf-8 representation,
-    and not the individual characters!
+.. примечание::
+    Если вам нужен доступ к байтовому представлению строки `s`, используйте
+    `bytes(s).length` / `bytes(s)[7] = 'x';`. Имейте в виду, что вы
+    получаете доступ к низкоуровневым байтам представления в формате utf-8,
+    а не к отдельным знакам!
 
 .. index:: ! array;length, length, push, !array;push
 
-Members
-^^^^^^^
+Члены
+^^^^^
 
 **length**:
-    Arrays have a `length` member to hold their number of elements.
-    Dynamic arrays can be resized in storage (not in memory) by changing the
-    `.length` member. This does not happen automatically when attempting to access elements outside the current length. The size of memory arrays is fixed (but dynamic, i.e. it can depend on runtime parameters) once they are created.
+    У массивов есть член `length` для хранения количества элементов.
+    Для динамических массивов можно изменять размеры в хранилище (не в памяти) путем изменения члена `.length`. Это не происходит автоматически при попытке доступа к элементам вне текущей длины. Как только масив в памяти создан, его размер фиксирован (но динамичен, т. е. может зависеть от параметров времени выполнения).
 **push**:
-     Dynamic storage arrays and `bytes` (not `string`) have a member function called `push` that can be used to append an element at the end of the array. The function returns the new length.
+     Динамические массивы в хранилище и `bytes` (не `string`) имеют функцию-член `push`, которую можно использовать для добавления элемента к концу массива. Эта функция возвращает новую длину.
 
 .. warning::
-    It is not yet possible to use arrays of arrays in external functions.
+    Пока невозможно использовать массивы массивов во внешних функциях.
 
 .. warning::
-    Due to limitations of the EVM, it is not possible to return
-    dynamic content from external function calls. The function `f` in
-    `contract C { function f() returns (uint[]) { ... } }` will return
-    something if called from web3.js, but not if called from Solidity.
+    Из-за ограничений EVM пока невозможно возвращать
+    динамический контент из вызовов внешних функций. Функция `f` в
+    `contract C { function f() returns (uint[]) { ... } }` возвратит
+    что-то, если она вызвана из web3.js, но не из Solidity.
 
-    The only workaround for now is to use large statically-sized arrays.
+    Единственное обходное решение этого пока что - использовать крупные массивы статического размера.
 
 
 ::
 
     contract ArrayContract {
       uint[2**20] m_aLotOfIntegers;
-      // Note that the following is not a pair of arrays but an array of pairs.
+      // Имейте в виду, что это не пара массивов, а массив пар.
       bool[2][] m_pairsOfFlags;
-      // newPairs is stored in memory - the default for function arguments
+      // newPairs хранится в памяти - вариант по умолчанию для аргументов функций
       function setAllFlagPairs(bool[2][] newPairs) {
-        // assignment to a storage array replaces the complete array
+        // присваивание массиву в хранилище заменяет весь массив
         m_pairsOfFlags = newPairs;
       }
       function setFlagPair(uint index, bool flagA, bool flagB) {
-        // access to a non-existing index will throw an exception
+        // доступ к несуществующему индексу генерирует исключение
         m_pairsOfFlags[index][0] = flagA;
         m_pairsOfFlags[index][1] = flagB;
       }
       function changeFlagArraySize(uint newSize) {
-        // if the new size is smaller, removed array elements will be cleared
+        // если новый размер меньше, удаленные элементы массива будут очищены
         m_pairsOfFlags.length = newSize;
       }
       function clear() {
-        // these clear the arrays completely
+        // этот код полностью очищает массивы
         delete m_pairsOfFlags;
         delete m_aLotOfIntegers;
-        // identical effect here
+        // идентичный эффект
         m_pairsOfFlags.length = 0;
       }
       bytes m_byteData;
       function byteArrays(bytes data) {
-        // byte arrays ("bytes") are different as they are stored without padding,
-        // but can be treated identical to "uint8[]"
+        // байтовые массивы ("bytes") отличаются тем, что хранятся без padding,
+        // но с ними можно обращаться так же, как и с "uint8[]"
         m_byteData = data;
         m_byteData.length += 7;
         m_byteData[3] = 8;
@@ -342,9 +306,9 @@ Members
         return m_pairsOfFlags.push(flag);
       }
       function createMemoryArray(uint size) returns (bytes) {
-        // Dynamic memory arrays are created using `new`:
+        // Динамические массивы в памяти создаются с помощью `new`:
         uint[2][] memory arrayOfPairs = new uint[2][](size);
-        // Create a dynamic byte array:
+        // Создание динамического массива байтов:
         bytes memory b = new bytes(200);
         for (uint i = 0; i < b.length; i++)
           b[i] = byte(i);
@@ -355,16 +319,15 @@ Members
 
 .. index:: ! struct, ! type;struct
 
-Structs
--------
+Структуры
+---------
 
-Solidity provides a way to define new types in the form of structs, which is
-shown in the following example:
+Solidity предоставляет способ определения новых типов в форме структур, который показан в следующем примере:
 
 ::
 
     contract CrowdFunding {
-      // Defines a new type with two fields.
+      // Определяет новый тип с двумя полями.
       struct Funder {
         address addr;
         uint amount;
@@ -379,15 +342,15 @@ shown in the following example:
       uint numCampaigns;
       mapping (uint => Campaign) campaigns;
       function newCampaign(address beneficiary, uint goal) returns (uint campaignID) {
-        campaignID = numCampaigns++; // campaignID is return variable
-        // Creates new struct and saves in storage. We leave out the mapping type.
+        campaignID = numCampaigns++; // campaignID - это возвращаемая переменная
+        // Создает новую структуру и сохраняет ее в хранилище. Мы опустили тип отображения.
         campaigns[campaignID] = Campaign(beneficiary, goal, 0, 0);
       }
       function contribute(uint campaignID) {
         Campaign c = campaigns[campaignID];
-            // Creates a new temporary memory struct, initialised with the given values
-            // and copies it over to storage.
-            // Note that you can also use Funder(msg.sender, msg.value) to initialise.
+            // Создает новую временную структуру в памяти, инициализируя ее указанными значениями,.
+            // и копирует ее в хранилище.
+            // Имейте в виду, что вы также можете использовать Funder(msg.sender, msg.value) для инициализации.
         c.funders[c.numFunders++] = Funder({addr: msg.sender, amount: msg.value});
         c.amount += msg.value;
       }
@@ -401,60 +364,44 @@ shown in the following example:
       }
     }
 
-The contract does not provide the full functionality of a crowdfunding
-contract, but it contains the basic concepts necessary to understand structs.
-Struct types can be used inside mappings and arrays and they can itself
-contain mappings and arrays.
+Этот контракт не предоставляет полную функциональность краудфандинга, но содержит базовые концепции, необходимые для понимания структур. Структуры можно использовать внутри отображений и массивов, и они сами могут содержать отображения и массивы.
 
-It is not possible for a struct to contain a member of its own type,
-although the struct itself can be the value type of a mapping member.
-This restriction is necessary, as the size of the struct has to be finite.
+Структура не может содержать член собственного типа, хотя сама структура может быть типом-значением члена отображения. Это ограничение необходимо потому, что размер структуры должен быть конечным.
 
-Note how in all the functions, a struct type is assigned to a local variable
-(of the default storage data location).
-This does not copy the struct but only stores a reference so that assignments to
-members of the local variable actually write to the state.
+Заметьте, как во всех функциях структура назначается локальной переменной (расположения данных хранилища по умолчанию). Это не копирует стурктуру, но только сохраняет ссылку, чтобы присваивания членам локальной переменной на самом деле приводили к записи в состояние.
 
-Of course, you can also directly access the members of the struct without
-assigning it to a local variable, as in
-`campaigns[campaignID].amount = 0`.
+Конечно, вы также можете получать непосредственный доступ к членам структуры, не присваивая ее локальной переменной, как в коде `campaigns[campaignID].amount = 0`.
 
 .. index:: !mapping
 
-Mappings
-========
+Отображения
+===========
 
-Mapping types are declared as `mapping _KeyType => _ValueType`, where
-`_KeyType` can be almost any type except for a mapping and `_ValueType`
-can actually be any type, including mappings.
+Типы-отображения объявляются как `mapping _KeyType => _ValueType`, где `_KeyType` может быть почти любым типом, за исключением отображения, а `_ValueType`может быть любым типом, включая отображения.
 
-Mappings can be seen as hashtables which are virtually initialized such that
-every possible key exists and is mapped to a value whose byte-representation is
-all zeros. The similarity ends here, though: The key data is not actually stored
-in a mapping, only its `sha3` hash used to look up the value.
+Отображения можно рассматривать как хеш-таблицы, которые виртуально инициализированы так, что существуют все возможные ключи, отображаемые на значения, байтовые представления которых содержат только нули. Однако на этом сходство заканчивается: данные ключей на самом деле не хранятся в отображении, а только их хеш `sha3` используется для просмотра значения.
 
-Because of this, mappings do not have a length or a concept of a key or value being "set".
+В силу этого отображения не имеют длины или концепции "заданного" ключа или значения.
 
-Mappings are only allowed for state variables (or as storage reference types
-in internal functions).
+Отображения поддерживаются только для переменных состояни (или как ссылочные типы хранилища во внутренних функциях).
 
 .. index:: assignment, ! delete, lvalue
 
-Operators Involving LValues
-===========================
+Операторы, включающие LValues
+=============================
 
-If `a` is an LValue (i.e. a variable or something that can be assigned to), the following operators are available as shorthands:
+Если `a` является LValue (т. е. переменной или чем-то, что может находиться слева от знака присваивания), доступны следующие сокращенные формы записи операторов:
 
-`a += e` is equivalent to `a = a + e`. The operators `-=`, `*=`, `/=`, `%=`, `a |=`, `&=` and `^=` are defined accordingly. `a++` and `a--` are equivalent to `a += 1` / `a -= 1` but the expression itself still has the previous value of `a`. In contrast, `--a` and `++a` have the same effect on `a` but return the value after the change.
+`a += e` эквивалентно `a = a + e`. Операторы `-=`, `*=`, `/=`, `%=`, `a |=`, `&=` и `^=` определены соответствующим образом. `a++` и `a--` эквивалентны `a += 1` / `a -= 1`, но само выражение имеет прежнее значение `a`. Напротив, `--a` и `++a` оказывают влияние на `a`, но возвращают значение после изменения.
 
 delete
 ------
 
-`delete a` assigns the initial value for the type to `a`. I.e. for integers it is equivalent to `a = 0`, but it can also be used on arrays, where it assigns a dynamic array of length zero or a static array of the same length with all elements reset. For structs, it assigns a struct with all members reset.
+`delete a` назначает первоначальное значение типа `a`. Т. е. для целых чисел это эквивалент `a = 0`, но его также можно использовать с массивами, в случае чего оно назначет динамический массив нулевой длины или статический массив той же длины со всеми сброшенными элементами. Для структур оно назначает структуру, у которой сброшены все члены.
 
-`delete` has no effect on whole mappings (as the keys of mappings may be arbitrary and are generally unknown). So if you delete a struct, it will reset all members that are not mappings and also recurse into the members unless they are mappings. However, individual keys and what they map to can be deleted.
+`delete` не оказывает влияния на целые отображения (поскольку ключи отображений могут быть произвольными и обычно неизвестны). Таким образом, если вы удаляете структуру, оно сбросит все члены, которые не являются отображениями, и также сделает заход в члены, если они не являются отображениями. Однако отдельные ключи и то, на что они отображаются, могут быть удалены.
 
-It is important to note that `delete a` really behaves like an assignment to `a`, i.e. it stores a new object in `a`.
+Важно отметить, что `delete a` на самом деле работает как присваивание `a`, т. е. сохраняет новый объект в `a`.
 
 ::
 
@@ -463,73 +410,57 @@ It is important to note that `delete a` really behaves like an assignment to `a`
       uint[] dataArray;
       function f() {
         uint x = data;
-        delete x; // sets x to 0, does not affect data
-        delete data; // sets data to 0, does not affect x which still holds a copy
+        delete x; // обнуляет x, не влияет на data
+        delete data; // обнуляет data, не влияет на x, которая по-прежнему содержит копию
         uint[] y = dataArray;
-        delete dataArray; // this sets dataArray.length to zero, but as uint[] is a complex object, also
-        // y is affected which is an alias to the storage object
-        // On the other hand: "delete y" is not valid, as assignments to local variables
-        // referencing storage objects can only be made from existing storage objects.
+        delete dataArray; // обнуляет dataArray.length, но, поскольку uint[] является сложным объектом, также
+        // влияет на y, которая является псевдонимом объекта в хранилище
+        // С другой стороны, код "delete y" недопустим, потому что присваивания локальным переменным,
+        // ссылающиеся на объекты в хранилище, можно выполнять только из существующих объектов в хранилище.
       }
     }
 
 .. index:: ! type;conversion, ! cast
 
-Conversions between Elementary Types
-====================================
+Преобразования элементарных типов
+=================================
 
-Implicit Conversions
+Неявные преобразования
+----------------------
+
+Если оператор применяется к разным типам, компилятор пытается неявно преобразовать один из операндов в тип другого (то же верно для присваиваний). В общем, неявное преобразование между типами-значениями возможно, если оно имеет смысл семантически и при этом не утрачивается никакая информация: `uint8` может быть преобразовано в `uint16`, а `int128` в `int256`, но `int8` не может быть преобразовано в `uint256` (потому что `uint256` не может, например, содержать `-1`). Более того, беззнаковые целые числа могут быть преобразовано в bytes того же или большего размера, но не наоборот. Любой тип, который может быть преобразован в `uint160`, может также быть преобразован в `address`.
+
+Явные преобразования
 --------------------
 
-If an operator is applied to different types, the compiler tries to
-implicitly convert one of the operands to the type of the other (the same is
-true for assignments). In general, an implicit conversion between value-types
-is possible if it
-makes sense semantically and no information is lost: `uint8` is convertible to
-`uint16` and `int128` to `int256`, but `int8` is not convertible to `uint256`
-(because `uint256` cannot hold e.g. `-1`).
-Furthermore, unsigned integers can be converted to bytes of the same or larger
-size, but not vice-versa. Any type that can be converted to `uint160` can also
-be converted to `address`.
-
-Explicit Conversions
---------------------
-
-If the compiler does not allow implicit conversion but you know what you are
-doing, an explicit type conversion is sometimes possible::
+Если компилятор не разрешает неявное преобразование, но вы знаете, что делаете, иногда возможно неявное преобразование типа::
 
     int8 y = -3;
     uint x = uint(y);
 
-At the end of this code snippet, `x` will have the value `0xfffff..fd` (64 hex
-characters), which is -3 in two's complement representation of 256 bits.
+В конце этого фрагмента кода `x` будет иметь значение `0xfffff..fd` (64 шестнадцатиричных знака), что равно -3 в two's complement representation of 256 bits.
 
-If a type is explicitly converted to a smaller type, higher-order bits are
-cut off::
+Если тип явно преобразуется в меньший тип, старшие биты отбрасываются::
 
     uint32 a = 0x12345678;
-    uint16 b = uint16(a); // b will be 0x5678 now
+    uint16 b = uint16(a); // теперь b равно 0x5678
 
 .. index:: ! type;deduction, ! var
 
 .. _type-deduction:
 
-Type Deduction
+Выведение типа
 ==============
 
-For convenience, it is not always necessary to explicitly specify the type of a
-variable, the compiler automatically infers it from the type of the first
-expression that is assigned to the variable::
+Ради удобства не всегда необходимо явно указывать тип переменной; компилятор автоматически выводит его из типа первого выражения, назначаемого переменной::
 
     uint20 x = 0x123;
     var y = x;
 
-Here, the type of `y` will be `uint20`. Using `var` is not possible for function
-parameters or return parameters.
+Здесь типом `y` будет `uint20`. Использовать `var` невозможно для параметров функций и возвращаемых параметров.
 
-.. warning::
-    The type is only deduced from the first assignment, so
-    the loop in the following snippet is infinite, as `i` will have the type
-    `uint8` and any value of this type is smaller than `2000`.
+.. предупреждение::
+    Тип выводится только из первого назначения, так что цикл в следующем фрагменте бесконечен, поскольку `i` будет иметь тип
+    `uint8` и любое значение этого типа меньше `2000`.
     `for (var i = 0; i < 2000; i++) { ... }`
 
