@@ -1,17 +1,14 @@
 .. index:: contract, state variable, function, event, struct, enum, function;modifier
 
-***********************
-Structure of a Contract
-***********************
+*******************
+Структура контракта
+*******************
 
-Contracts in Solidity are similar to classes in object-oriented languages.
-Each contract can contain declarations of **state variables**, **functions**,
-**function modifiers**, **events**, **structs types** and **enum types**.
-Furthermore, contracts can inherit from other contracts.
+Контакты в Solidity похожи на классы в объектно-ориентированных языках программирования. Каждый контракт может содержать объявления **переменных состояния**, **функций**, **модификаторов функций**, **событий**, **структур** и **перечислений**. Кроме того, контракты можно наследовать от других контрактов.
 
-* State variables are values which are permanently stored in contract storage.
-* Functions are the executable units of code within a contract.
-* Function modifiers can be used to amend the semantics of functions in a declarative way.
-* Events are convenience interfaces with the EVM logging facilities.
-* Structs are custom defined types that can group several variables.
-* Enums can be used to create custom types with a finite set of values.
+* Переменные состояния - это значения, которые постоянно хранятся в хранилище контракта.
+* Функции - это исполняемые модули кода в контракте.
+* Модификаторы функций можно использовать для изменения семантики функций в декларативном стиле.
+* События - это convenience интерфейсы с EVM logging facilities.
+* Структуры - это пользовательские типы, которые могут группировать несколько переменных.
+* Перечисления можно использовать для создания пользовательских типов с конечным множеством значений.
