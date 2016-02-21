@@ -1,200 +1,149 @@
-###########################
-Frequently Asked Questions
-###########################
+########################
+Часто задаваемые вопросы
+########################
 
-This list was originally compiled by [fivedogit](mailto:fivedogit@gmail.com).
+Этот список был первоначально составлен [fivedogit](mailto:fivedogit@gmail.com).
 
 
 ***************
-Basic Questions
+Базовые вопросы
 ***************
 
-What is Solidity?
+Что такое Solidity?
 =============================
 
-Solidity is the DEV-created (i.e. Ethereum Foundation-created),
-Javascript-inspired language that can be used to create smart contracts
-on the Ethereum blockchain. There are other
-languages you can use as well (LLL, Serpent, etc). The main points in
-favour of Solidity is that it is statically typed and offers many
-advanced features like inheritance, libraries, complex
-user-defined types and a bytecode optimizer.
+Solidity - это созданный в DEV (т. е. Ethereum Foundation) вдохновленный Javascript язык, который можно использовать для создания с март-контрактов на блокчейне Эфириума. Есть и другие языки, которые можно использовать (LLL, Serpent и не только). Главные аргументы в пользу Solidity - это то, что он статически типизирован и предлагает много передовых возможностей, таких как наследование, библиотеки, сложные пользовательские типы и оптимизатор байт-кода.
 
-Solidity contracts can be compiled a few different ways (see below) and the
-resulting output can be cut/pasted into a geth console to deploy them to the
-Ethereum blockchain.
+Контракты Solidity можно компилировать несколькими разными способами (см. ниже), и результирующий вывод можно вырезать/вставлять в консоль geth для их развертывания на блокчейне Эфириума.
 
-There are some `contract examples <https://github.com/fivedogit/solidity-baby-steps/tree/master/contracts/>`_ by fivedogit and 
-there should be a `test contract <https://github.com/ethereum/solidity/blob/develop/test/libsolidity/SolidityEndToEndTest.cpp>`_ for every single feature of Solidity.
+Доступны некоторые `примеры контрактов <https://github.com/fivedogit/solidity-baby-steps/tree/master/contracts/>`_ by fivedogit и здесь должен быть `тестовый контракт <https://github.com/ethereum/solidity/blob/develop/test/libsolidity/SolidityEndToEndTest.cpp>`_ для каждой возможности Solidity.
 
-How do I compile contracts?
-=============================
+Как скомпилировать контракт?
+============================
 
-Probably the fastest way is the `online compiler <https://chriseth.github.io/browser-solidity/>`_.
+Пожалуй, скорейший способ - это воспользоваться `онлайн-компилятором <https://chriseth.github.io/browser-solidity/>`_.
 
-You can also use the `solc` binary which comes with cpp-ethereum to compile
-contracts or an emerging option is to use Mix, the IDE.
+Вы также можете использовать двоичный файл `solc`, который поставляется вместе с cpp-ethereum, для компиляции контрактов, или emerging option - это использовать Mix, интегрированную среду разработки.
 
 
-Create and publish the most basic contract possible
-===================================================
+Создание и публикация простейшего контракта
+===========================================
 
-A quite simple contract is the `greeter <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/05_greeter.sol>`_
+Совсем простой контракт вот: `greeter <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/05_greeter.sol>`_
 
-Is it possible to do something on a specific block number? (e.g. publish a contract or execute a transaction)
-=============================================================================================================
+Можно ли сделать что-то при конкретном номере блока (например, опубликовать контракт или выполнить транзакцию)?
+===============================================================================================================
 
-Transactions are not guaranteed to happen on the next block or any future
-specific block, since it is up to the miners to include transactions and not up
-to the submitter of the transaction. This applies to function calls/transactions and contract
-creation transactions.
+Нет никакой гарантии, что транзакция случится в следующем или каком-либо будущем конкретном блоке, поскольку включют транзакции в блокчейн майнеры, а не ее отправитель. Это относится к вызовам функций/транзакциям и транзакциям создания контрактов.
 
-If you want to schedule future calls of your contract, you can use the
-`alarm clock <http://www.ethereum-alarm-clock.com/>`_.
+Если вы хотите запланировать будущие вызовы своего контракта, можете использовать `alarm clock <http://www.ethereum-alarm-clock.com/>`_.
 
-What is the transaction "payload"?
-==================================
+Что такое "полезная нагрузка" транзакции?
+=========================================
 
-This is just the bytecode "data" sent along with the request.
+Это просто "данные" в байт-коде, отправляемые вместе с запросом.
 
-Is there a decompiler available?
-================================
+Доступен ли декомпилятор?
+=========================
 
-There is no decompiler to Solidity. This is in principle possible
-to some degree, but for example variable names will be lost and
-great effort will be necessary to make it look similar to
-the original source code.
+Декомпилятора в Solidity нет. В принципе, это в некоторой степени возможно, но, например, имена переменных будут утрачены, и потребуется немало усилий, чтобы сделать его похожим на оригинальный исходный код.
 
-Bytecode can be decompiled to opcodes, a service that is provided by
-several blockchain explorers.
+Байт-код можно декомпилировать в опкоды, и этот сервис предоставляют несколько блокчейн-эксплореров.
 
-Contracts on the blockchain should have their original source
-code published if they are to be used by third parties.
+Контрактам следует публиковать на блокчейне свй первоначальный исходный код, если предполагается, что их будут использовать третьи стороны.
 
-Does selfdestruct() free up space in the blockchain?
-====================================================
+Освобождает ли функция selfdestruct() место в блокчейне?
+========================================================
 
-It removes the contract bytecode and storage from the current block
-into the future, but since the blockchain stores every single block (i.e.
-all history), this will not actually free up space on full/achive nodes.
+Она удаляет байт-код контракта и хранилище из текущего блока и в дальнейшее будущее, но, поскольку блокчейн хранит каждый блок (т. е. всю историю), на деле это не освободит место в полных/архивных узлах.
 
-Create a contract that can be killed and return funds
-=====================================================
+Создание контракта, который можно убить и вернуть фонды
+=======================================================
 
-First, a word of warning: Killing contracts sounds like a good idea, because "cleaning up"
-is always good, but as seen above, it does not really clean up. Furthermore,
-if Ether is sent to removed contracts, the Ether will be forever lost.
+Прежде всего, предупреждение: убийство контрактов кажется хорошей идеей, потому что "очистка" - это всегда хорошо, но, как сказано выше, на самом деле это не очистка. Более того, если эфир отправляется удаленным контрактам, он будет безвозвратно утерян.
 
-If you want to deactivate your contracts, rather **disable** them by changing some
-internal state which causes all functions to throw. This will make it impossible
-to use the contract and ether sent to the contract will be returned automatically.
+Если вы хотите деактивировать свои контракты, лучше **отключите** их, изменив какое-нибудь внутреннее состояние, чтобы все функции throw. Это сделает невозможным использование контракта, и эфир, отправляемый контракту, автоматически будет возвращаться.
 
-Now to answering the question: Inside a constructor, `msg.sender` is the
-creator. Save it. Then `selfdestruct(creator);` to kill and return funds.
+Теперь ответ на вопрос. Внутри конструктора создателем является `msg.sender`. Сохраните ее. Затем вызовите `selfdestruct(creator);`, чтобы убить и вернуть фонды.
 
 `example <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/05_greeter.sol>`_
 
-Note that if you `import "mortal"` at the top of your contracts and declare
-`contract SomeContract is mortal { ...` and compile with a compiler that already
-has it (which includes `browser-solidity <https://chriseth.github.io/browser-solidity/>`_), then
-`kill()` is taken care of for you. Once a contract is "mortal", then you can
-`contractname.kill.sendTransaction({from:eth.coinbase})`, just the same as my
-examples.
+Имейте в виду, что, если вы `import "mortal"` в начале контрактов и объявляете `contract SomeContract is mortal { ...` и компилируете с компилятором, который уже имеет это (что включает `browser-solidity <https://chriseth.github.io/browser-solidity/>`_), то `kill()` выполняется за вас. Как только контракт "mortal", вы можете вызвать `contractname.kill.sendTransaction({from:eth.coinbase})`, точно так же, как в моих примерах.
 
-Store Ether in a contract
-=========================
+Сохранение эфира в контракте
+============================
 
-The trick is to create the contract with `{from:someaddress, value: web3.toWei(3,"ether")...}`
+Хитрость в том, чтобы создать контракт с помощью кода `{from:someaddress, value: web3.toWei(3,"ether")...}`
 
-See `endowment_retriever.sol <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/30_endowment_retriever.sol>`_.
+См. `endowment_retriever.sol <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/30_endowment_retriever.sol>`_.
 
-Use a non-constant function (req sendTransaction) to increment a variable in a contract
-=======================================================================================
+Использование неконстантной функции (req sendTransaction) для увеличения переменной в контракте
+===============================================================================================
 
-See `value_incrementer.sol <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/20_value_incrementer.sol>`_.
+См. `value_incrementer.sol <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/20_value_incrementer.sol>`_.
 
-Get contract address in Solidity
-================================
+Получение адреса контракта в Solidity
+=====================================
 
-Short answer: The global variable `this` is the contract address.
+Краткий ответ: адрес контракта представляет глобальная переменная `this`.
 
-See `basic_info_getter <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/15_basic_info_getter.sol>`_.
+См. `basic_info_getter <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/15_basic_info_getter.sol>`_.
 
-Long answer: `this` is a variable representing the current contract.
-Its type is the type of the contract. Since any contract type basically inherits from the
-`address` type, `this` is always convertible to `address` and in this case contains
-its own address.
+Подробный ответ: переменная `this` представляет текущий контракт. Ее типом является тип контракта. Поскольку любой тип контракта, по сути, наследуется от типа `address`, `this` всегда можно преобразовать в `address`, и в этом случае она содержит собственный адрес.
 
-What is the difference between a function marked constant and one that is not?
-==============================================================================
+Каковы различия функции, отмеченной constant, и обычной?
+========================================================
 
-`constant` functions can perform some action and return a value, but cannot
-change state (this is not yet enforced by the compiler). In other words, a
-constant function cannot save or update any variables within the contract or wider
-blockchain. These functions are called using `c.someFunction(...)` from
-geth or any other web3.js environment.
+Функции `constant` могут выполнять некоторое действие и возвращать значение, но не могут изменять состояние (это еще не форсируется компилятором). Иначе говоря, константная функция не может сохранять или обновлять какие-либо переменные в контракте или более широком блокчейне. Эти функции вызываются в виде `c.someFunction(...)` из geth или любой другой среды web3.js.
 
-"non-constant" functions (those lacking the `constant` specifier) must be called
-with `c.someMethod.sendTransaction({from:eth.accounts[x], gas: 1000000});`
-That is, because they can change state, they have to have a gas
-payment sent along to get the work done.
+"non-constant" функции (те, у которых нет спецификатора `constant`) необходимо вызывать в формате `c.someMethod.sendTransaction({from:eth.accounts[x], gas: 1000000});`. Иначе говоря, поскольку они могут изменять состояние, с ними нужно отправлять газ как плату за выполнение работы.
 
-Get a contract to return its funds to you (not using selfdestruct(...)). 
+Как сделать, чтобы контракт вернул вам свои фонды (не используя selfdestruct(...)). 
 ========================================================================
 
-This example demonstrates how to send funds from a contract to an address. 
+Этот пример демонстрирует, как отправить фонды из контракта адресу. 
 
-See `endowment_retriever <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/30_endowment_retriever.sol>`_.
+См. `endowment_retriever <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/30_endowment_retriever.sol>`_.
 
-What is a mapping and how do we use them?
-=========================================
+Что такое отображение и как его использовать?
+=============================================
 
-A mapping is very similar to a K->V hashmap.
-If you have a state variable of type `mapping (string -> uint) x;`, then you can
-access the value by `x["somekeystring"]`.
+Отображение очень похоже на K->V hashmap. Если у вас есть переменная состояния типа `mapping (string -> uint) x;`, то вы можете получать доступ этому значению как `x["somekeystring"]`.
 
-How can I get the length of a mapping?
-======================================
+Как получить длину отображения?
+===============================
 
-Mappings are a rather low-level data structure. It does not store the keys
-and it is not possible to know which or how many values are "set". Actually,
-all values to all possible keys are set by default, they are just
-initialised with the zero value.
+Отображения - это довольно низкоуровневая структура данных. Она не хранит ключи, и невозможно узнать, какие или сколько значений "задано". На самом деле заданы по умолчанию все значения всех возможных ключей, просто они инициализированы нулями.
 
-In this sense, the attribute `length` for a mapping does not really apply.
+В этом смысле атрибут `length` на самом деле не применим к отображению.
 
-If you want to have a "sized mapping", you can use the iterable mapping
-(see below) or just a dynamically-sized array of structs.
+Если вы хотите использовать "sized mapping", вы можете использовать итерируемое отображение (см. ниже) или просто динамический массив структур.
 
-Are mappings iterable?
-======================
+Являются ли отображения итерируемыми?
+=====================================
 
-Mappings themselves are not iterable, but you can use a higher-level
-datastructure on top of it, for example the `iterable mapping <https://github.com/ethereum/dapp-bin/blob/master/library/iterable_mapping.sol>`_.
+Отображения сами по себе не итерируемы, но вы можете использовать поверх нее структуру данных более высокого уровня, например `iterable mapping <https://github.com/ethereum/dapp-bin/blob/master/library/iterable_mapping.sol>`_.
 
-Can you return an array or a string from a solidity function call?
-==================================================================
+Можно ли возвратить из вызова функции Solidity массив или строку?
+=================================================================
 
-Yes. See `array_receiver_and_returner.sol <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/60_array_receiver_and_returner.sol>`_.
+Да. См. `array_receiver_and_returner.sol <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/60_array_receiver_and_returner.sol>`_.
 
-What is problematic, though, is returning any variably-sized data (e.g. a
-variably-sized array like `uint[]`) from a fuction **called from within Solidity**.
-This is a limitation of the EVM and will be solved with the next protocol update.
+Однако из **вызванной внутри Solidity** функции проблематично вернуть любые данные переменного размера (например, массив переменного размера, такой как `uint[]`). Это ограничение EVM, которое будет устранено в следующем обновлении протокола.
 
-Returning variably-sized data as part of an external transaction or call is fine.
+Возвращать данные переменного размера как часть внешней транзакции или вызова можно без проблем.
 
-How do you represent double/float in Solidity?
-==============================================
+Как представить в Solidity значение double/float?
+=================================================
 
-This is not yet possible.
+Это пока невозможно.
 
-Is it possible to in-line initialize an array like so: string[] myarray = ["a", "b"];
+Можно ли инициализировать массив со встраиванием: string[] myarray = ["a", "b"];
 =======================================================================================
 
-Yes. However it should be noted that this currently only works with statically sized memory arrays. You can even create an inline memory
-array in the return statement. Pretty cool, huh?
+Да. Однако следует отметить, что в настоящее время это работает только с массивами в памяти статического размера. Вы даже можете создать встроенный массив в памяти в операторе return. Здорово, да?
 
-Example::
+Пример::
 
     contract C {
         function f() returns (uint8[5]) {
@@ -203,134 +152,99 @@ Example::
         }
     }
 
-What are events and why do we need them?
-========================================
+Что такое события и зачем они нужны?
+====================================
 
-Let us suppose that you need a contract to alert the outside world when
-something happens. The contract can fire an event, which can be listened to
-from web3 (inside geth or a web application). The main advantage of events
-is that they are stored in a special way on the blockchain so that it
-is very easy to search for them.
+Предположим, что вам нужен контракт, уведомляющий внешний мир о том, когда что-то происходит. Контракт может сгенерировать событие, которое можно слушать из web3 (в geth или веб-приложении). Главное преимущество событий в том, что они хранятся на блокчейне специальным образом, так что их очень легко искать.
 
-What are the different function visibilities?
-=============================================
+Каковы разные видимости функций?
+================================
 
-The visibility specifiers do not only change the visibility but also
-the way functions can be called. In general, functions in the
-same contract can also be called internally (which is cheaper
-and allows for memory types to be passed by reference). This
-is done if you just use `f(1,2)`. If you use `this.f(1,2)`
-or `otherContract.f(1,2)`, the function is called externally.
+Спецификаторы видимости изменяют не только видимость, но и возможные способы вызова функций. В общем, функции в одном контракте могут также вызываться внутренне (что дешевле и позволяет типы памяти передавать по ссылке). Это выполняется, если вы просто используете `f(1,2)`. Если вы используете `this.f(1,2)` или `otherContract.f(1,2)`, функция вызывается внешне.
 
-Internal function calls have the advantage that you can use
-all Solidity types as parameters, but you have to stick to the
-simpler ABI types for external calls.
+Внутренние вызовы функций имеют то преимущество, что вы можете использовать в качестве параметров все типы Solidity, но в случае внешних вызовов вынуждены ограничиваться более простыми типами ABI.
 
-* external: all, only externally
+* external: все, только внешне
 
-* public: all (this is the default), externally and internally
+* public: все (это вариант по умолчанию), внешне и внутренне
 
-* internal: only this contract and contracts deriving from it, only internally
+* internal: только этот контракт и контракты, производные от него, только внутренне
 
-* private: only this contract, only internally
+* private: только этот контракт, только внутренне
 
 
-Do contract constructors have to be publicly visible?
+Должны ли конструкторы контрактов быть publicly visible?
 =====================================================
 
-You can use the visibility specifiers, but they do not yet have any effect.
-The constructor is removed from the contract code once it is deployed,
+Вы можете использовать спецификаторы видимости, но они еще не имеют никакого эффекта. Как только код контракта развернут, конструктор из него удаляется.
 
-Can a contract have multiple constructors?
-==========================================
+Может ли контракт иметь несколько конструкторов?
+================================================
 
-No, a contract can have only one constructor.
+Нет, у контракта может быть только один конструктор.
 
-More specifically, it can only have one function whose name matches
-that of the constructor.
+Говоря точнее, у него может быть только одна функция, имя которой совпадает с именем конструктора.
 
-Having multiple constructors with different number of arguments
-or argument types, as it is possible in other languages
-is not allowed in Solidity.
+Нааличие нескольких конструкторов, различающихся по количеству аргументов или их типами), допускаемое в других языках, в Solidity не поддерживается.
 
-Is a constructor required?
-==========================
+Конструктор необходим?
+======================
 
-No. If there is no constructor, a generic one without arguments and no actions will be used.
+Нет. Если конструктора нет, будет использован generic one без аргументов и действий.
 
-Are timestamps (now, block.timestamp) reliable? 
-===============================================
+Надежны ли временные метки (now, block.timestamp)? 
+==================================================
 
-This depends on what you mean by "reliable".
-In general, they are supplied by miners and are therefore vulnerable.
+Это зависит от того, что понимать под "надежностью". В общем, они предоставляются майнерами, а потому уязвимы.
 
-Unless someone really messes up the blockchain or the clock on
-your computer, you can make the following assumptions:
+Если только кто-то не балует с блокчейном по-настоящему или не случилось что-то с часами на вашем компьютере, вы можете исходить из следующих предположений:
 
-You publish a transaction at a time X, this transaction contains same
-code that calls `now` and is included in a block whose timestamp is Y
-and this block is included into the canonical chain (published) at a time Z.
+Вы публикуете транзакцию в момент X, эта транзакция содержит тот же код, который вызывает `now` и включается в блок с временной меткой Y, и этот блок включается в каноническй блокчейн (публикуется) в момент Z.
 
-The value of `now` will be identical to Y and X <= Y <= Z.
+Значение `now` будет равно Y, и X <= Y <= Z.
 
-Never use `now` or `block.hash` as a source of randomness, unless you know
-what you are doing!
+Никогда не используйте `now` или `block.hash` как источник случайности, если не уверены в том, что делаете!
 
-Can a contract function return a struct?
-========================================
+Может ли функция контракта возвращать структуру?
+================================================
 
-Yes, but only in "internal" function calls.
+Да, но только во "внутренних" вызовах функций.
 
-If I return an enum, I only get integer values in web3.js. How to get the named values?
-=======================================================================================
+Если я возвращаю перечисление, я получаю только целочисленные значения в web3.js. Как получить именованные значения?
+====================================================================================================================
 
-Enums are not supported by the ABI, they are just supported by Solidity.
-You have to do the mapping yourself for now, we might provide some help
-later.
+Перечисления не поддерживаются в ABI, они просто поддерживаются в Solidity. Вы должны пока что сделать для себя отображение, мы можем позже предоставить некоторую помощь.
 
-What is the deal with "function () { ... }" inside Solidity contracts? How can a function not have a name?
-==========================================================================================================
+Что такое с "function () { ... }" внутри контрактов Solidity? Как функция может не иметь имени?
+===============================================================================================
 
-This function is called "fallback function" and it
-is called when someone just sent Ether to the contract without
-providing any data or if someone messed up the types so that they tried to
-call a function that does not exist.
+Эта функция называется "fallback function" и вызывается, когда кто-то просто отправляет эфир контракту, не предоставляя никаких данных, или если кто-то напутал с типами и пытается вызвать функцию, которой не существует.
 
-The default behaviour (if no fallback function is explicitly given) in
-these situations is to just accept the call and do nothing.
-This is desireable in many cases, but should only be used if there is
-a way to pull out Ether from a contract.
+Поведение по умолчанию (если никакая fallback function не задана явно) в этих ситуациях - это просто принмать вызов и ничего не делатль. Это желательно во многих случаях, но следует использовать, только если есть способ вывести эфир из контракта.
 
-If the contract is not meant to receive Ether with simple transfers, you
-should implement the fallback function as
+Если контракт не рассчитан на получение эфира в простых трансферах, вам следует реализовать fallback function как
 
 `function() { throw; }`
 
-this will cause all transactions to this contract that do not call an
-existing function to be reverted, so that all Ether is sent back. 
+это приведет к обращению всех транзакций этому контракту, которые не вызывают существующую функцию, чтобы весь эфир отправить обратно.
 
-Another use of the fallback function is to e.g. register that your
-contract received ether by using an event.
+Другой способ использования аварийной функции - это, например, регистрация с помощью события того, что ваш контракт получил эфир.
 
-*Attention*: If you implement the fallback function take care that it uses as
-little gas as possible, because `send()` will only supply a limited amount.
+*Внимание*: если вы реализуете аварийную функцию, позаботьтесь о том, чтобы она использовала как можно меньше газа, потому что `send()` предоставит лишь ограниченный объем.
 
-Is it possible to pass arguments to the fallback function?
+Можно ли передавать аргументы в аварийную функцию?
 ==========================================================
 
-The fallback function cannot take parameters.
+Аварийная функция не может принимать параметры.
 
-Under special circumstances, you can send data. If you take care
-that none of the other functions is invoked, you can access the data
-by `msg.data`.
+В некоторых обстоятельствах вы может отправлять данные. Если вы позаботитесь о том, чтобы никакие другие функции не вызывались, вы можете получить доступ к данным с помощью кода `msg.data`.
 
-Can state variables be initialized in-line?
-===========================================
+Можно ли инициализировать переменные состояния встроенным кодом?
+================================================================
 
-Yes, this is possible for all types (even for structs). However, for arrays it 
-should be noted that you must declare them as static memory arrays.
+Да, это возможно для всех типов (даже для структур). Однако следует отметить, что в случае массивов вы должны объявить их как статические массивы в памяти.
 
-Examples::
+Примеры::
 
     contract C {
         struct S { uint a; uint b; }
@@ -342,48 +256,40 @@ Examples::
         C c = new C();
     }
 
-What is the "modifier" keyword?
+Что такое ключевое слово "modifier"?
 ===============================
 
-Modifiers are a way to prepend or append code to a function in order
-to add guards, initialisation or cleanup functionality in a concise way.
+Модификаторы - это способ добавления кода к функции для добавления guards, инициализации или очистки in a concise way.
 
-For examples, see the `features.sol <https://github.com/ethereum/dapp-bin/blob/master/library/features.sol>`_.
+Примеры см. в `features.sol <https://github.com/ethereum/dapp-bin/blob/master/library/features.sol>`_.
 
-How do structs work?
-====================
+Как работают структуры?
+=======================
 
-See `struct_and_for_loop_tester.sol <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/65_struct_and_for_loop_tester.sol>`_.
+См. `struct_and_for_loop_tester.sol <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/65_struct_and_for_loop_tester.sol>`_.
 
-How do for loops work?
-======================
+Как работают циклы for?
+=======================
 
-Very similar to JavaScript. There is one point to watch out for, though:
+Очень похоже на JavaScript. Следует, однако, иметь в виду один момент.
 
-If you use `for (var i = 0; i < a.length; i ++) { a[i] = i; }`, then
-the type of `i` will be inferred only from `0`, whose type is `uint8`.
-This means that if `a` has more than `255` elements, your loop will
-not terminate because `i` can only hold values up to `255`.
+Если вы используете код `for (var i = 0; i < a.length; i ++) { a[i] = i; }`, то тип `i` будет выведен только из `0`, которое имеет тип `uint8`. Это означает, что, если `a` имеет больше `255` элементов, ваш цикл не завершится, потому что `i` может содержать только значения до `255`.
 
-Better use `for (uint i = 0; i < a.length...`
+Лучше использовать код `for (uint i = 0; i < a.length...`
 
-See `struct_and_for_loop_tester.sol <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/65_struct_and_for_loop_tester.sol>`_.
+См. `struct_and_for_loop_tester.sol <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/65_struct_and_for_loop_tester.sol>`_.
 
-What character set does Solidity use?
-=====================================
+Какой набор знаков используется в Solidity?
+===========================================
 
-Solidity is character set agnostic concerning strings in the source code, although
-utf-8 is recommended. Identifiers (variables, functions, ...) can only use
-ASCII.
+Solidity безразличен к набору знаков в отношении строк в исходном коде, хотя рекомендуется использовать utf-8. В идентификаторах (переменных, функциях, ...) можно использовать только ASCII.
 
-What are some examples of basic string manipulation (substring, indexOf, charAt, etc)?
-======================================================================================
+Каковы некоторые примеры простых операций над строками (substring, indexOf, charAt, ...)?
+=========================================================================================
 
-There are some string utility functions at `stringUtils.sol <https://github.com/ethereum/dapp-bin/blob/master/library/stringUtils.sol>`_
-which will be extended in the future.
+Некоторые функции для работы со строками доступны в файле `stringUtils.sol <https://github.com/ethereum/dapp-bin/blob/master/library/stringUtils.sol>`_, что будет расширено в будущем.
 
-For now, if you want to modify a string (even when you only want to know its length),
-you should always convert it to a `bytes` first::
+Пока что, если вы хотите изменить строку (даже если вы хотите лишь узнать ее длину), вам всегда следует преобразовывать ее сначала в `bytes`::
 
     contract C {
         string s;
@@ -396,37 +302,32 @@ you should always convert it to a `bytes` first::
     }
 
 
-Can I concatenate two strings?
-==============================
+Можно ли объединить две строки (выполнить конкатенацию)?
+========================================================
 
-You have to do it manually for now.
+Пока что вы должны делать это вручную.
 
-Why is the low-level function .call() less favorable than instantiating a contract with a variable (ContractB b;) and executing its functions (b.doSomething();)?
+Почему низкоуровневый function .call() менее предпочтителен, чем создание экземпляра контракта с переменной (ContractB b;) и выполнение его функций (b.doSomething();)?
 =================================================================================================================================================================
 
-If you use actual functions, the compiler will tell you if the types
-or your arguments do not match, if the function does not exist
-or is not visible and it will do the packing of the
-arguments for you.
+Если вы используте фактические функции, компилятор будет сообщать вам, если типы ваших аргументов не соответствуют, если функция не существует или не видима, и это обеспечит упаковку аргументов для вас.
 
-See `ping.sol <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/45_ping.sol>`_ and
+См. `ping.sol <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/45_ping.sol>`_ и
 `pong.sol <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/45_pong.sol>`_.
 
-Is unused gas automatically refunded?
-=====================================
+Неиспользованный газ автоматически возвращается?
+================================================
 
-Yes and it is immediate, i.e. done as part of the transaction.
+Да, и это происходит немедленно, т. е. как часть транзакции.
 
-When returning a value of say "uint" type, is it possible to return an "undefined" or "null"-like value?
+При возврате значения, скажем, типа "uint" можно ли возвратить значение "undefined" или "null"-like?
 ========================================================================================================
 
-This is not possible, because all types use up the full value range.
+Это невозможно, потому что все типы используют полный диапазон значений.
 
-You have the option to `throw` on error, which will also revert the whole
-transaction, which might be a good idea if you ran into an unexpected
-situation.
+У вас есть вариант `throw` при ошибке, что также обратит всю транзакцию, что может быть хорошей идеей, если вы попали в непредвиденную ситуацию.
 
-If you do not want to throw, you can return a pair::
+Если вы не хотите throw, вы можете возвратить пару::
 
     contract C {
         uint[] counters;
@@ -443,56 +344,41 @@ If you do not want to throw, you can return a pair::
     }
 
 
-Are comments included with deployed contracts and do they increase deployment gas?
+Включаются ли комментарии в развернутые контракты и увеличивают ли они расходы газа на развертывание?
 ==================================================================================
 
-No, everything that is not needed for execution is removed during compilation.
-This includes, among others, comments, variable names and type names.
+Нет, все, что не требуется для выполнения, удаляется во время компиляции. Это включает, помимо прочего, комментарии, имена переменных и имена типов.
 
-What happens if you send ether along with a function call to a contract?
+Что случится, если отправить контракту эфир вместе с вызовом функции?
 ========================================================================
 
-It gets added to the total balance of the contract, just like when you send ether when creating a contract.
+Он добавляется к общему балансу контракта, как и тогда, когда вы отправляете эфир при создании контракта.
 
-Is it possible to get a tx receipt for a transaction executed contract-to-contract?
+Можно ли получить квитанцию транзакции, выполненной между контрактами?
 ===================================================================================
 
-No, a function call from one contract to another does not create its own transaction,
-you have to look in the overall transaction. This is also the reason why several
-block explorer do not show Ether sent between contracts correctly.
+Нет, вызов функции одного контракта из другого не приводит к созданию собственной транзакции, вам нужно смотреть в общей транзакции. Именно по этой причине несколько блокчейн-эксплореров не отображают правильно эфир, отправленный между контрактами.
 
-What is the memory keyword? What does it do?
+Что такое ключевое слово memory? Что оно делает?
 ============================================
 
-The Ethereum Virtual Machine has three areas where it can store items.
+Виртуальная машина Эфириума может хранить элементы в трех областях.
 
-The first is "storage", where all the contract state variables reside.
-Every contract has its own storage and it is persistent between function calls
-and quite expensive to use.
+Первая - "хранилище", где находятся все переменные состояния контракта. У каждого контракта есть свое хранилище, и оно сохраняется между функциями вызовов и довольно дорого в использовании.
 
-The second is "memory", this is used to hold temporary values. It
-is erased between (external) function calls and is cheaper to use.
+Второе - "память", которое используется дял хранения временных значений. Оно очищается между (внешними) вызовами функций и дешево.
 
-The third one is the stack, which is used to hold small local variables.
-It is almost free to use, but can only hold a limited amount of values.
+Третий - "стек", который используется для хранения небольших локальных переменных. Он почти бесплатен в использовании, но может содержать ограниченное количество значений.
 
-For almost all types, you cannot specify where they should be stored, because
-they are copied everytime they are used.
+Почти ни для каких типов вы не можете указать, где они должны храниться, потому что они копируются каждый раз, когда используются.
 
-The types where the so-called storage location is important are structs
-and arrays. If you e.g. pass such variables in function calls, their
-data is not copied if it can stay in memory or stay in storage.
-This means that you can modify their content in the called function
-and these modifications will still be visible in the caller.
+К типам, где важно так называемое расположение хранилища, относятся структуры и массивы. Если вы, например, передаете такие переменные в вызовах функций, их данные не копируются, если они могут остаться в памяти или в хранилище. Это означает, что вы можете изменить их содержимое в вызванной функции, и эти изменения будут видны в вызвавшем коде. У расположения хранилища есть настройки по умолчанию, зависящие от типа переменной:
 
-There are defaults for the storage location depending on which type
-of variable it concerns:
+* переменные состояния всегда находятся в хранилище
+* аргументы функций всегда находятся в памяти
+* локальные переменные всегда ссылаются на хранилище
 
-* state variables are always in storage
-* function arguments are always in memory
-* local variables always reference storage
-
-Example::
+Пример::
 
     contract C {
         uint[] data1;
@@ -508,19 +394,11 @@ Example::
         }
     }
 
-The function `append` can work both on `data1` and `data2` and its modifications will be
-stored permanently. If you remove the `storage` keyword, the default
-is to use `memory` for function arguments. This has the effect that
-at the point where `append(data1)` or `append(data2)` is called, an
-independent copy of the state variable is created in memory and
-`append` operates on this copy (which does not support `.push` - but that
-is another issue). The modifications to this independent copy do not
-carry back to `data1` or `data2`.
+Функция `append` может работать и с `data1`, и с `data2`, и ее модификации будут сохраняться перманентно. Если удалить ключевое слово `storage`, по умолчанию для аргументов функций будет использоваться `memory`. Это имеет тот эффект, что в точке, где вызывается `append(data1)` или `append(data2)` в памяти создается независимая копия переменной состояния, и функция `append` работает с этой копией (которая не поддерживает `.push` - но это другой разговор). Изменения этой независимой копии не переносятся на `data1` или `data2`.
 
-A common mistake is to declare a local variable and assume that it will
-be created in memory, although it will be created in storage::
+Частая ошибка - объявлять локальную переменную в предположении, что она будет создана в памяти, хотя на самом деле она будет создана в хранилище::
 
-    /// THIS CONTRACT CONTAINS AN ERROR
+    /// ЭТОТ КОНТРАКТ СОДЕРЖИТ ОШИБКУ
     contract C {
         uint someVariable;
         uint[] data;
@@ -531,18 +409,11 @@ be created in memory, although it will be created in storage::
         }
     }
 
-The type of the local variable `x` is `uint[] storage`, but since
-storage is not dynamically allocated, it has to be assigned from
-a state variable before it can be used. So no space in storage will be
-allocated for `x`, but instead it functions only as an alias for
-a pre-existing variable in storage.
+Локальная переменная `x` имеет тип `uint[] storage`, но, поскольку хранилище не выделяется динамически, оно должно быть назначено из переменной состояния, прежде чем его можно будет использовать. Таким образом, для `x` не выделяется никакое место в хранилище, но вместо этого она работает исключительно как псевдоним существующей переменной в хранилище.
 
-What will happen is that the compiler interprets `x` as a storage
-pointer and will make it point to the storage slot `0` by default.
-This has the effect that `someVariable` (which resides at storage
-slot `0`) is modified by `x.push(2)`.
+Что произойдет, так это то, что компилятор интерпретирует `x` как указатель на хранилище и укажет им по умолчанию на слот хранилища `0`. Это имеет тот эффект, что `someVariable` (которая находится в слоте хранилища `0`) изменяется кодом `x.push(2)`.
 
-The correct way to do this is the following::
+Вот правильный способ сделать это::
 
     contract C {
         uint someVariable;
@@ -553,133 +424,102 @@ The correct way to do this is the following::
         }
     }
 
-Can a regular (i.e. non-contract) ethereum account be closed permanently like a contract can?
+Может ли обычный счет (т. е. не контракта) Эфириума быть навсегда закрыт как контракт?
 =============================================================================================
 
-No. Non-contract accounts "exist" as long as the private key is known by
-someone or can be generated in some way.
+Нет. Счета не контрактов "существуют", пока его закрытый ключ кому-то известен или может быть некоторым образом сгенерирован.
 
-What is the difference between `bytes` and `byte[]`?
+В чем разница между `bytes` и `byte[]`?
 ====================================================
 
-`bytes` is usually more efficient: When used as arguments to functions (i.e. in
-CALLDATA) or in memory, every single element of a `byte[]` is padded to 32
-bytes which wastes 31 bytes per element.
+`bytes` обычно эффективнее: при использовании в качестве аргументов функций (т. е. в CALLDATA) или в памяти каждый элемент `byte[]` дополняется до 32 байтов, при этом впустую расходуется 31 байт на элемент.
 
-Is it possible to send a value while calling an overloaded function?
+Можно ли отправить значение при вызове перегруженной функции?
 ====================================================================
 
-It's a known missing feature. https://www.pivotaltracker.com/story/show/92020468
+Это известная нехватающая возможность. https://www.pivotaltracker.com/story/show/92020468
 as part of https://www.pivotaltracker.com/n/projects/1189488
 
-Best solution currently see is to introduce a special case for gas and value and
-just re-check whether they are present at the point of overload resolution.
+В настоящее время лучшее решение - это ввести специальный случай для газа и значения и просто перепроверять, имеются ли они, в точке разрешения перегруженной функции.
 
 
 ******************
-Advanced Questions
+Продвинутые вопросы
 ******************
 
-How do you get a random number in a contract? (Implement a self-returning gambling contract.)
+Как получить случайное число в контракте? (Для реализации самоисполняемого гемблинг-контракта.)
 =============================================================================================
 
-Getting randomness right is often the crucial part in a crypto project and
-most failures result from bad random number generators.
+Получить правильно случайность - часто ключевая часть криптопроекта, и большинство неудач являются результатом плохих генераторов случайных чисел.
 
-If you do not want it to be safe, you build something similar to the `coin flipper <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/35_coin_flipper.sol>`_
-but otherwise, rather use a contract that supplies randomness, like the `RANDAO <https://github.com/randao/randao>`_.
+Если вам не нужна надежная защита, можете создать что-то вроде `coin flipper <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/35_coin_flipper.sol>`_, но в противном случае лучше используте контракт, предоставляющий случайность, такой как `RANDAO <https://github.com/randao/randao>`_.
 
-Get return value from non-constant function from another contract
-=================================================================
+Получение возвращаемого значения из неконстантной функции из другого контракта
+==============================================================================
 
-The key point is that the calling contract needs to know about the function it intends to call.
+Ключевой момент в том, что вызывающий контракт должен знать о функции, которую он намеревается вызвать.
 
-See `ping.sol <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/45_ping.sol>`_
-and `pong.sol <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/45_pong.sol>`_.
+См. `ping.sol <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/45_ping.sol>`_
+и `pong.sol <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/45_pong.sol>`_.
 
-Get contract to do something when it is first mined
-===================================================
+Указание контракту сделать что-то при его майнинге в первый раз
+===============================================================
 
-Use the constructor. Anything inside it will be executed when the contract is first mined.
+Используйте конструктор. Все внутри него будет выполнено при первом майнинге контракта.
 
-See `replicator.sol <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/50_replicator.sol>`_.
+См. `replicator.sol <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/50_replicator.sol>`_.
 
-Can a contract create another contract?
+Может ли контракт создать другой контракт?
 =======================================
 
-Yes, see `replicator.sol <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/50_replicator.sol>`_.
+Да, см. `replicator.sol <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/50_replicator.sol>`_.
 
-Note that the full code of the created contract has to be included in the creator contract.
-This also means that cyclic creations are not possible (because the contract would have
-to contain its own code) - at least not in a general way.
+Имейте в виду, что полный код создаваемого контракта нужно включить в контракт-создатель. Это также означает, что циклическое создание невозможно (потому что контракт должен был бы содержать собственный код) - по крайней мере, не обычым способом.
 
-How do you create 2-dimensional arrays?
+Как создать двумерный массив?
 =======================================
 
-See `2D_array.sol <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/55_2D_array.sol>`_.
+См. `2D_array.sol <https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/55_2D_array.sol>`_.
 
-Note that filling a 10x10 square of `uint8` + contract creation took more than `800,000`
-gas at the time of this writing. 17x17 took `2,000,000` gas. With the limit at
-3.14 million... well, there’s a pretty low ceiling for what you can create right
-now.
+Имейте в виду, что на заполнение квадрата 10x10 значениями `uint8` + создание контракта потребовалось на день написания этого текста более `800 000` газа. На 17x17 - `2000 000` газа. С ограничением в 3,14 миллиона... ну, это довольно низкий потолок того, что вы можете создать пока.
 
-Note that merely "creating" the array is free, the costs are in filling it.
+Имейте в виду, что простое "создание" массива бесплатно, затраты связаны с его заполнением.
 
-Note2: Optimizing storage access can pull the gas costs down considerably, because
-32 `uint8` values can be stored in a single slot. The problem is that these optimizations
-currently do not work across loops and also have a problem with bounds checking.
-You might get much better results in the future, though.
+Note2: Оптимизация доступа к хранилищу может существенно сократить траты газа, потому что 32 значения `uint8` можно хранить в одном слоте. проблема в том, что эти оптимизации в настоящее время не работают между циклами и также имеют проблему с проверко границ. Таким образом, в будущем вы можете получить результаты гораздо лучше.
 
-What does p.recipient.call.value(p.amount)(p.data) do?
+Что делает код p.recipient.call.value(p.amount)(p.data)?
 ======================================================
 
-Every external function call in Solidity can be modified in two ways:
+Каждый внешний вызов функции в Solidity можно модифицировать двумя способами:
 
-1. You can add Ether together with the call
-2. You can limit the amount of gas available to the call
+1. Вы можете добавить эфир вместе с вызовом
+2. Вы можете ограничить объем газа, доступный вызову
 
-This is done by "calling a function on the function":
+Это выполняется путем "вызова функции на функции":
 
-`f.gas(2).value(20)()` calls the modified function `f` and thereby sending 20
-Wei and limiting the gas to 2 (so this function call will most likely go out of
-gas and return your 20 Wei).
+`f.gas(2).value(20)()` вызывает модифицированную функцию `f` и тем самым отправляя 20 Wei и ограничивая газ значением 2 (так что этот вызов функции, скорее всего, исчерпает газ и возвратит ваши 20 Wei).
 
-In the above example, the low-level function `call` is used to invoke another
-contract with `p.data` as payload and `p.amount` Wei is sent with that call.
+В приведенном выше примере для вызова другого контракта используется низкоуровневая функция `call` с полезной нагрузкой `p.data`, и вместе с этим вызовом отправляется `p.amount` Wei.
 
-Can a contract function accept a two-dimensional array?
+Может ли функция контракта принимать двумерный массив?
 =======================================================
 
-This is not yet implemented for external calls and dynamic arrays - 
-you can only use one level of dynamic arrays.
+Это еще не реализовано для внешних вызовов и динамических массивов - вы можете использовать только одноуровневые динамические массивы
 
-What is the relationship between bytes32 and string? Why is it that ‘bytes32 somevar = "stringliteral";’ works and what does the saved 32-byte hex value mean?
+Каково отношение между типами bytes32 и string? Почему ‘bytes32 somevar = "stringliteral";’ работает и что значит сохраненное 32-разрядное шестнадцатеричное значение?
 ==============================================================================================================================================================
 
-The type `bytes32` can hold 32 (raw) bytes. In the assignment `bytes32 samevar = "stringliteral";`,
-the string literal is interpreted in its raw byte form and if you inspect `somevar` and
-see a 32-byte hex value, this is just `"stringliteral"` in hex.
+Тип `bytes32` может содержать 32 (необработанных) байта. В присваивании `bytes32 samevar = "stringliteral";` строковый литерал интерпретируется в своей необработанной байтовой форме, и, если вы посмотрите `somevar` и увидите 32-разрядное шестнадцатеричное значение, это просто `"stringliteral"` в шестнадцатеричной системе счисления.
 
-The type `bytes` is similar, only that it can change its length.
+Тип `bytes` похож, только он может изменять длину.
 
-Finally, `string` is basically identical to `bytes` only that it is assumed
-to hold the utf-8 encoding of a real string. Since `string` stores the
-data in utf-8 encoding it is quite expensive to compute the number of
-characters in the string (the encoding of some characters takes more
-than a single byte). Because of that, `string s; s.length` is not yet
-supported and not even index access `s[2]`. But if you want to access
-the low-level byte encoding of the string, you can use
-`bytes(s).length` and `bytes(s)[2]` which will result in the number
-of bytes in the utf-8 encoding of the string (not the number of
-characters) and the second byte (not character) of the utf-8 encoded
-string, respectively.
+Наконец, `string`, по сути, идентичен `bytes`, только предполагается, что он содержит реальную строку в кодировке utf-8. Поскольку `string` хранит данные в кодировке utf-8, вычислять количество знаков в строке довольно дорого (кодировка некоторых знаков занимает больше одного байта). По этой причине `string s; s.length` пока не поддерживается; даже индексный доступ `s[2]` не поддерживается. Но если вам нужен доступ к строке в низкоуровневой байтовой кодировке, вы можете использовать `bytes(s).length` и `bytes(s)[2]`, которые возвратят количество байтов в кодировке utf-8 строки (а не количество знаков) и второй байт (не знак) строки в кодировке utf-8 соответственно.
 
 
-Can a contract pass an array (static size) or string or bytes (dynamic size) to another contract?
+Может ли контракт передать массив (статического размера) или строку или bytes (динамического размера) другому контракту?
 =================================================================================================
 
-Sure. Take care that if you cross the memory / storage boundary,
-independent copies will be created::
+Конечно. Имейте в виду, что, если вы пересечете "границу" между памятью и хранилищем, будут созданы независимые копии::
 
     contract C {
       uint[20] x;
@@ -694,92 +534,69 @@ independent copies will be created::
         y[3] = 4;
       }
 
-The call to `g(x)` will not have an effect on `x` because it needs
-to create an independent copy of the storage value in memory
-(the default storage location is memory). On the other hand,
-`h(x)` successfully modifies `x` because only a reference
-and not a copy is passed.
+Вызов `g(x)` не окажет влияния на `x`, потому что он должен создать независимую копию значения из хранилища в памяти (по умолчанию расположением хранилища является память). С другой стороны, `h(x)` успешно модифицирует `x`, потому что передается только ссылка, а не копия.
 
-Sometimes, when I try to change the length of an array with ex: "arrayname.length = 7;" I get a compiler error "Value must be an lvalue". Why?
+Иногда когда я пытаюсь изменить длину массива кодом вроде: "arrayname.length = 7;" компилятор сообщает об ошибке "Value must be an lvalue". Почему?
 ==============================================================================================================================================
 
-You can resize a dynamic array in storage (i.e. an array declared at the
-contract level) with `arrayname.length = <some new length>;`. If you get the
-"lvalue" error, you are probably doing one of two things wrong.
+Вы можете изменять размеры динамического массива в хранилище (т. е. массива, объявленного на уровне контракта) с помощью кода `arrayname.length = <some new length>;`. Если вы получите ошибку "lvalue", вы, вероятно, делаете неправильно одно из двух.
 
-1. You might be trying to resize an array in "memory", or
+1. Пытаетесь изменить размеры массива "в памяти" или
 
-2. You might be trying to resize a non-dynamic array.
+2. Пытаетесь изменить размеры нединамического массива.
 
 ::
 
-    int8[] memory memArr;       // Case 1
-    memArr.length++;            // illegal
-    int8[5] storageArr;         // Case 2
-    somearray.length++;         // legal
-    int8[5] storage storageArr2; // Explicit case 2
-    somearray2.length++;         // legal
+    int8[] memory memArr;       // случай 1
+    memArr.length++;            // недопустимо
+    int8[5] storageArr;         // случай 2
+    somearray.length++;         // допустимо
+    int8[5] storage storageArr2; // явный случай 2
+    somearray2.length++;         // допустимо
 
-**Important note:** In Solidity, array dimensions are declared backwards from the way you
-might be used to declaring them in C or Java, but they are access as in
-C or Java.
+**Важное примечание:** В Solidity измерения массива объявляются обратно способу, к которому вы, возможно, привыкли в объявлениях на C или Java, но доступ к ним выполняется как в C и Java.
 
-For example, `int8[][5] somearray;` are 5 dynamic `int8` arrays.
+Например, `int8[][5] somearray;` - это 5 динамических массивов `int8`.
 
-The reason for this is that `T[5]` is always an array of 5 `T`s,
-no matter whether `T` itself is an array or not (this is not the
-case in C or Java).
+Причина этого в том, что `T[5]` - всегда массив из 5 `T` независимо от того, является ли сам `T` массивом или нет (в C и Java это не так).
 
-Is it possible to return an array of strings ( string[] ) from a Solidity function?
+Можно ли возвратить из функции Solidity массив строк ( string[] )?
 ===================================================================================
 
-Not yet, as this requires two levels of dynamic arrays (`string` is a dynamic array itself).
+Пока нет, поскольку для этого требуется двухуровневый динамический массив (сама `string` - это динамический массив).
 
-If you issue a call for an array, it is possible to retrieve the whole array? Or must you write a helper function for that?
+При вызове массива можно ли получить весь массив? Или для этого нужно писать функцию-хелп***ер?
 ===========================================================================================================================
 
-The automatic accessor function for a public state variable of array type only returns
-individual elements. If you want to return the complete array, you have to
-manually write a function to do that.
+Автоматическая функция-аксессор для открытой переменной состояния или типа массива возвращает только отдельные элементы. Если вы хотите возвратить весь массив, вам нужно вручную написать функцию для этого.
 
 
-What could have happened if an account has storage value/s but no code?  Example: http://test.ether.camp/account/5f740b3a43fbb99724ce93a879805f4dc89178b5
+Что могло произойти, что счет имеет значение или значения в хранилище, но не имеет кода? Пример: http://test.ether.camp/account/5f740b3a43fbb99724ce93a879805f4dc89178b5
 =========================================================================================================================================================
 
-The last thing a constructor does is returning the code of the contract.
-The gas costs for this depend on the length of the code and it might be
-that the supplied gas is not enough. This situation is the only one
-where an "out of gas" exception does not revert changes to the state,
-i.e. in this case the initialisation of the state variables.
+Последнее, что делает конструктор, это возвращает код контракта. Затраты газа на это зависят от длины кода и может получиться так, что предоставленного газа недостаточно. Эта ситуация является единственной, когда исключение "out of gas" не обращает изменения состояния, т. е. в этом случае инициализацию переменных состояния.
 
 https://github.com/ethereum/wiki/wiki/Subtleties
 
-After a successful CREATE operation's sub-execution, if the operation returns x, 5 * len(x) gas is subtracted from the remaining gas before the contract is created. If the remaining gas is less than 5 * len(x), then no gas is subtracted, the code of the created contract becomes the empty string, but this is not treated as an exceptional condition - no reverts happen.
+После успешного субвыполнения операции CREATE, если операция возвращает x, из оставшегося газа вычитается объем газа 5 * len(x) перед созданием контракта. Если оставшегося газа меньше, чем 5 * len(x), никакой газ не вычитается, код созданного контракта становится пустой строкой, но это не считается исключительным условием - откат не выполняется.
 
 
-How do I use .send()?
+Как использовать .send()?
 =====================
 
-If you want to send 20 Ether from a contract to the address `x`, you use `x.send(20 ether);`.
-Here, `x` can be a plain address or a contract. If the contract already explicitly defines
-a function `send` (and thus overwrites the special function), you can use `address(x).send(20 ether);`.
+Если вы хотите отправить 20 эфира с контракта на адрес `x`, вы используете код `x.send(20 ether);`. Здесь `x` может быть обычным адресом контракта. Если контракт уже явно определяет функцию `send` (и, таким образом, перезаписывает специальную функцию), вы можете использовать код `address(x).send(20 ether);`.
 
-What does the following strange check do in the Custom Token contract?
+Что делает следующая странная проверка в контракте Custom Token?
 ======================================================================
 
 ::
 
     if (balanceOf[_to] + _value < balanceOf[_to]) throw;
 
-Integers in Solidity (and most other machine-related programming languages) are restricted to a certain range.
-For `uint256`, this is `0` up to `2**256 - 1`. If the result of some operation on those numbers
-does not fit inside this range, it is truncated. These truncations can have
-`serious consequences <https://en.bitcoin.it/wiki/Value_overflow_incident>`_, so code like the one
-above is necessary to avoid certain attacks.
+Целые числа в Solidity (и большинстве других machine-related языков программирования) ограничены определенным диапазоном. Для `uint256` это диапазон от `0` до `2**256 - 1`. Если результат некоторой операции над этими числами не помещается в этот диапазон, он усекается. Эти усечения могут иметь `серьезные последствия <https://en.bitcoin.it/wiki/Value_overflow_incident>`_, так что код вроде того, что выше, необходим для защиты от некоторых атак.
 
 
-More Questions?
+Другие вопросы?
 ===============
 
-If you have more questions or your question is not answered here, please talk to us on
-`gitter <https://gitter.im/ethereum/solidity>`_ or file an `issue <https://github.com/ethereum/solidity/issues>`_.
+Если у вас есть другие вопросы, можете задать их нам в `gitter <https://gitter.im/ethereum/solidity>`_ или оформить `проблему <https://github.com/ethereum/solidity/issues>`_.
