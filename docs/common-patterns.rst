@@ -8,50 +8,45 @@
 Ограничение доступа
 *******************
 
-Ограничение доступа - частый паттерн в контрактах. Имейте в виду, что вы не можете помешать человеку или компьютеру прочитать содержимое ваших транзакций или состояние вашего контракта. Вы можете немного затруднить это с помощью шифрования, но если предполагается, что ваш контракт должен читать данные, их сможет прочитать кто угодноelse.
+Ограничение доступа - частый паттерн в контрактах. Имейте в виду, что вы не можете помешать человеку или компьютеру прочитать содержимое ваших транзакций или состояние вашего контракта. Вы можете немного затруднить это с помощью шифрования, но если предполагается, что ваш контракт должен читать данные, их сможет прочитать кто угодно.
 
-You can restrict read access to your contract's state
-by **other contracts**. That is actually the default
-unless you declare make your state variables `public`.
+Вы можете ограничить доступ с правом на чтение к состоянию вашего контракта для **других контрактов**. По сути, это поведение имеет место по умолчанию, если только вы не объявляете свои переменные состояния как `public`.
 
-Furthermore, you can restrict who can make modifications
-to your contract's state or call your contract's
-functions and this is what this page is about.
+Более того, вы можете ограничить, кто может изменять состояние вашего контракта или вызывать функции вашего контракта, и именно об этом данная страница.
 
 .. index:: function;modifier
 
-The use of **function modifiers** makes these
-restrictions highly readable.
+Использование **модификаторов функций** позволяет легко читать эти ограничения.
 
 .. {% include open_link gist="fe4ef267cbdeac151b98" %}
 
 ::
 
     contract AccessRestriction {
-        // These will be assigned at the construction
-        // phase, where `msg.sender` is the account
-        // creating this contract.
+        // Эти переменные будут назначены на этапе
+        // конструирования, где `msg.sender` - это счет,
+        // создающий данный контракт.
         address public owner = msg.sender;
         uint public creationTime = now;
 
-        // Modifiers can be used to change
-        // the body of a function.
-        // If this modifier is used, it will
-        // prepend a check that only passes
-        // if the function is called from
-        // a certain address.
+        // Модификаторы можно использовать для
+        // изменения тела функции.
+        // Если этот модификатор используется, он предварит
+        // проверку, которая проходит, только если
+        // функция вызывается с
+        // определенного адреса.
         modifier onlyBy(address _account)
         {
             if (msg.sender != _account)
                 throw;
-            // Do not forget the "_"! It will
-            // be replaced by the actual function
-            // body when the modifier is invoked.
+            // На забудьте "_"! Это будет заменено фактическим
+            // телом функции
+            // при вызове модификатора.
             _
         }
 
-        /// Make `_newOwner` the new owner of this
-        /// contract.
+        /// Сделаем `_newOwner` новым владельцем этого
+        /// контракта.
         function changeOwner(address _newOwner)
             onlyBy(owner)
         {
@@ -63,9 +58,9 @@ restrictions highly readable.
             _
         }
 
-        /// Erase ownership information.
-        /// May only be called 6 weeks after
-        /// the contract has been created.
+        /// Очищает информацию о владении.
+        /// Может только быть вызвана через 6 недель
+        /// после создания контракта.
         function disown()
             onlyBy(owner)
             onlyAfter(creationTime + 6 weeks)
@@ -73,13 +68,13 @@ restrictions highly readable.
             delete owner;
         }
 
-        // This modifier requires a certain
-        // fee being associated with a function call.
-        // If the caller sent too much, he or she is
-        // refunded, but only after the function body.
-        // This is dangerous, because if the function
-        // uses `return` explicitly, this will not be
-        // done!
+        // Этот модификатор требует, чтобы с вызовом функции
+        // была связана определенная комиссия.
+        // Если вызывающий отправил слишком много, он получает
+        // сдачу, но только после тела функции.
+        // Это опасно, потому что, если функция явно
+        // использует `return`, это не будет
+        // сделано!
         modifier costs(uint _amount) {
             if (msg.value < _amount)
                 throw;
@@ -92,75 +87,55 @@ restrictions highly readable.
             costs(200 ether)
         {
             owner = _newOwner;
-            // just some example condition
+            // просто пример условия
             if (uint(owner) & 0 == 1)
-                // in this case, overpaid fees will not
-                // be refunded
+                // в том случае чрезмерно уплаченные комиссии
+                // не будут возвращены
                 return;
-            // otherwise, refund overpaid fees
+            // в противном случае лишняя комиссия возвращается
         }
     }
 
-A more specialised way in which access to function
-calls can be restricted will be discussed
-in the next example.
+Более специализированный способ ограничения доступак вызовам функций будет обсуждаться в следующем примере.
 
 .. index:: state machine
 
-*************
-State Machine
-*************
+****************
+Машина состояний
+****************
 
-Contracts often act as a state machine, which means
-that they have certain **stages** in which they behave
-differently or in which different functions can
-be called. A function call often ends a stage
-and transitions the contract into the next stage
-(especially if the contract models **interaction**).
-It is also common that some stages are automatically
-reached at a certain point in **time**.
+Контракты часто работают как машина состояний, что означает, что они имеют определенные **стадии**, на которых они ведут себя по-разному, или на которых можно вызывать разные функции. Вызов функции часто завершает стадию и переводит контракт в следующую стадию (особенно если контракт моделирует **взаимодействие**). Также часто встречается, что некоторые стадии автоматически достигаются в определенный момент **времени**.
 
-An example for this is a blind auction contract which
-starts in the stage "accepting blinded bids", then
-transitions to "revealing bids" which is ended by
-"determine auction autcome".
+Примером этого является контракт слепого аукциона, который начинается на стадии "прием ставок вслепую", затем переходит в "обнародование ставок", что завершается стадией "определение результата аукциона".
 
 .. index:: function;modifier
 
-Function modifiers can be used in this situation
-to model the states and guard against
-incorrect usage of the contract.
+В этой ситуации можно использовать модификаторы функций для моделирования состояний и предотвращения некорректного использования контракта.
 
-Example
-=======
+Пример
+======
 
-In the following example,
-the modifier `atStage` ensures that the function can
-only be called at a certain stage.
+В следующем примере модификатор `atStage` гарантирует, что функция может быть вызвана только на определенной стадии.
 
-Automatic timed transitions
-are handled by the modifier `timeTransitions`, which
-should be used for all functions.
+Переходы с автоматическим таймингом обрабатываются модификатором `timeTransitions`, который следует использовать со всеми функциями.
 
-.. note::
-    **Modifier Order Matters**.
-    If atStage is combined
-    with timedTransitions, make sure that you mention
-    it after the latter, so that the new stage is
-    taken into account.
+.. примечание::
+    **Порядок модификаторов важен**.
+    Если atStage объединен
+    с timedTransitions, убедитесь, что вы упоминаете его после
+    последнего, чтобы учесть
+    новую стадию.
 
-Finally, the modifier `transitionNext` can be used
-to automatically go to the next stage when the
-function finishes.
+Наконец, модификатор `transitionNext` можно использовать для автоматического перехода к следующей стадии при завершении функции.
 
 .. note::
-    **Modifier May be Skipped**.
-    Since modifiers are applied by simply replacing
-    code and not by using a function call,
-    the code in the transitionNext modifier
-    can be skipped if the function itself uses
-    return. If you want to do that, make sure
-    to call nextStage manually from those functions.
+    **Модификатор может быть пропущен**.
+    Поскольку модификаторы применяются путем простой замены кода,
+    а не с помощью вызова функции,
+    код в модификаторе transitionNext
+    может быть пропущен, если сама функция использует
+    return. Если вы хотите сделать это, не забудьте
+    вызвать nextStage вручную из этих функций.
 
 .. {% include open_link gist="0a221eaceb6d708bf271" %}
 
@@ -174,7 +149,7 @@ function finishes.
             AreWeDoneYet,
             Finished
         }
-        // This is the current stage.
+        // Это текущая стадия.
         Stages public stage = Stages.AcceptingBlindedBids;
 
         uint public creationTime = now;
@@ -186,9 +161,9 @@ function finishes.
         function nextStage() internal {
             stage = Stages(uint(stage) + 1);
         }
-        // Perform timed transitions. Be sure to mention
-        // this modifier first, otherwise the guards
-        // will not take the new stage into account.
+        // Выполняет транзакции с таймингом. Не забудьте упомянуть этот
+        // модификатор первым, в противом случае защитники
+        // не примут новую стадию во внимание.
         modifier timedTransitions() {
             if (stage == Stages.AcceptingBlindedBids &&
                         now >= creationTime + 10 days)
@@ -196,15 +171,15 @@ function finishes.
             if (stage == Stages.RevealBids &&
                     now >= creationTime + 12 days)
                 nextStage();
-            // The other stages transition by transaction
+            // Переходы в другие стадии по транзакции
         }
         
-        // Order of the modifiers matters here!
+        // Порядок модификаторов здесь важен!
         function bid()
             timedTransitions
             atStage(Stages.AcceptingBlindedBids)
         {
-            // We will not implement that here
+            // Мы не будем реализовывать это здесь
         }
         function reveal()
             timedTransitions
@@ -212,11 +187,11 @@ function finishes.
         {
         }
 
-        // This modifier goes to the next stage
-        // after the function is done.
-        // If you use `return` in the function,
-        // `nextStage` will not be called
-        // automatically.
+        // Этот модификатор переходит к следующей стадии
+        // после выполнения функции.
+        // Ели вы используете `return` в функции,
+        // `nextStage` не будет вызвана
+        // автоматически.
         modifier transitionNext()
         {
             _
@@ -227,8 +202,8 @@ function finishes.
             atStage(Stages.AnotherStage)
             transitionNext
         {
-            // If you want to use `return` here,
-            // you have to call `nextStage()` manually.
+            // Если вы хотите использовать здесь `return`,
+            // вы должны вручную вызвать `nextStage()`.
         }
         function h()
             timedTransitions
