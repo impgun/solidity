@@ -1,35 +1,31 @@
-#############
-Miscellaneous
-#############
+######
+Разное
+######
 
 .. index:: storage, state variable, mapping
 
-************************************
-Layout of State Variables in Storage
-************************************
+*********************************************
+Расположение переменных состояния в хранилище
+*********************************************
 
-Statically-sized variables (everything except mapping and dynamically-sized array types) are laid out contiguously in storage starting from position `0`. Multiple items that need less than 32 bytes are packed into a single storage slot if possible, according to the following rules:
+Переменные статического размера (все, за исключением отображений и динамически изменяемых массивов) располагается в хранилище непрерывно, начиная с позиции `0`. Множественные элементы, которым нужно меньше 32 байтов, упаковываются по возможности в один слот хранилища согласно следующим правилам:
 
-- The first item in a storage slot is stored lower-order aligned.
-- Elementary types use only that many bytes that are necessary to store them.
-- If an elementary type does not fit the remaining part of a storage slot, it is moved to the next storage slot.
-- Structs and array data always start a new slot and occupy whole slots (but items inside a struct or array are packed tightly according to these rules).
+- Первый элемент в слоте хранилища хранится с выровненным slot is stored lower-order aligned.
+- Элементарные типы используют лишь столько байтов, сколько необходимо для их хранения.
+- Если элементарный тип не помещается в оставшуюся часть слота хранилища, он перемещается в следующий слот хранилища.
+- Структуры и массивы всегда начинают новый слот и занимают целые слоты (но элементы в структуре или массиве упаковываются плотно сокгласно приведенным правилам).
 
-The elements of structs and arrays are stored after each other, just as if they were given explicitly.
+Элементы структур и массивов хранятся друг за другом, как если бы они были предоставлены явно.
 
-Due to their unpredictable size, mapping and dynamically-sized array types use a `sha3`
-computation to find the starting position of the value or the array data. These starting positions are always full stack slots.
+Из-за непредсказуемого размера отображения и динамические массивы используют алгоритм `sha3` для нахождения стартовой позиции значения или данных массива. Эти начальные позиции всегда соответствуют полным слотам стека.
 
-The mapping or the dynamic array itself
-occupies an (unfilled) slot in storage at some position `p` according to the above rule (or by
-recursively applying this rule for mappings to mappings or arrays of arrays). For a dynamic array, this slot stores the number of elements in the array (byte arrays and strings are an exception here, see below). For a mapping, the slot is unused (but it is needed so that two equal mappings after each other will use a different hash distribution).
-Array data is located at `sha3(p)` and the value corresponding to a mapping key
-`k` is located at `sha3(k . p)` where `.` is concatenation. If the value is again a
-non-elementary type, the positions are found by adding an offset of `sha3(k . p)`.
+Отображение или динамический массив сами по себе занимают (незаполненный) слот в хранилище в некоторой позиции `p` согласно приведенному выше правилу (или путем рекурсивного применения этого правила для отображений на отображения или массивов массивов). В случае динамического массива в этом слоте хранится количество элементов в массве (байтовые массивы и строки являются здесь исключением; см. ниже). В случае отображения слот не используется (но он необходим, чтобы два равных отображения одно после другого использовали разное распределение хешей).
 
-`bytes` and `string` store their data in the same slot where also the length is stored if they are short. In particular: If the data is at most `31` bytes long, it is stored in the higher-order bytes (left aligned) and the lowest-order byte stores `length * 2`. If it is longer, the main slot stores `length * 2 + 1` and the data is stored as usual in `sha3(slot)`.
+Данные массива располагаются по `sha3(p)`, а значение, соответствующее ключу отображения `k`, располагается по `sha3(k . p)`, где `.` представляет конкатенацию. Если значение снова является неэлементарным типом, позиции находятся путем добавления смещения `sha3(k . p)`.
 
-So for the following contract snippet::
+`bytes` и `string` хранят свои данные в том же слоте, где также хранится длина, если они коротки. В частности: если данные занимают не больше `31` байта, они хранятся в старших байтах (выровненных по левому краю), а младший байт хранит `length * 2`. Если данные длиннее, главный слот хранит `length * 2 + 1`, а данные хранятся обычным образом в `sha3(slot)`.
+
+Таким образом, для следующего фрагмента контракта::
 
     contract c {
       struct S { uint a; uint b; }
@@ -37,13 +33,13 @@ So for the following contract snippet::
       mapping(uint => mapping(uint => S)) data;
     }
 
-The position of `data[4][9].b` is at `sha3(uint256(9) . sha3(uint256(4) . uint256(1))) + 1`.
+Позицией `data[4][9].b` является `sha3(uint256(9) . sha3(uint256(4) . uint256(1))) + 1`.
 
-*****************
-Esoteric Features
-*****************
+*************************
+Эзотерические возможности
+*************************
 
-There are some types in Solidity's type system that have no counterpart in the syntax. One of these types are the types of functions. But still, using `var` it is possible to have local variables of these types::
+В системе типов Solidity есть несколько типов, у которых нет аналога в синтаксисе. Один из таких типов - типы функций. Но все же, используя `var`, можно иметь локальные переменные этих типов::
 
     contract FunctionSelector {
       function select(bool useB, uint x) returns (uint z) {
@@ -59,21 +55,21 @@ There are some types in Solidity's type system that have no counterpart in the s
       }
     }
 
-Calling `select(false, x)` will compute `x * x` and `select(true, x)` will compute `2 * x`.
+Вызов `select(false, x)` вычислит `x * x`, а `select(true, x)` вычислит `2 * x`.
 
 .. index:: optimizer, common subexpression elimination, constant propagation
 
-*************************
-Internals - the Optimizer
-*************************
+**************************
+Внутренности - оптимизатор
+**************************
 
-The Solidity optimizer operates on assembly, so it can be and also is used by other languages. It splits the sequence of instructions into basic blocks at JUMPs and JUMPDESTs. Inside these blocks, the instructions are analysed and every modification to the stack, to memory or storage is recorded as an expression which consists of an instruction and a list of arguments which are essentially pointers to other expressions. The main idea is now to find expressions that are always equal (on every input) and combine them into an expression class. The optimizer first tries to find each new expression in a list of already known expressions. If this does not work, the expression is simplified according to rules like `constant` + `constant` = `sum_of_constants` or `X` * 1 = `X`. Since this is done recursively, we can also apply the latter rule if the second factor is a more complex expression where we know that it will always evaluate to one. Modifications to storage and memory locations have to erase knowledge about storage and memory locations which are not known to be different: If we first write to location x and then to location y and both are input variables, the second could overwrite the first, so we actually do not know what is stored at x after we wrote to y. On the other hand, if a simplification of the expression x - y evaluates to a non-zero constant, we know that we can keep our knowledge about what is stored at x.
+Оптимизатор Solidity работает с ассемблерным кодом, так что он может использоваться и используется другими языками. Он разделяет последовательность инструкций на базовые блоки, такие как JUMPs и JUMPDESTs. Внутри этих блоков инструкции анализируются, и каждое изменение стека, памяти или хранилища записывается как выражение, которое состоит из инструкции и списка аргументов, которые, по сути, являются указателями на другие выражения. Главная идея теперь - найти выражения, которые всегда равны (при каждом вводе) и объединить их в класс выражения. Оптимизатор сначала пытается найти каждое новое выражение в списке уже известных выражений. Если это не работает, выражение упрощается согласно правилам вроде `constant` + `constant` = `sum_of_constants` или `X` * 1 = `X`. Поскольку это выполняется рекурсивно, мы можем также применить последнее правило, если вторым множителем factor? является более сложное выражение, где мы знаем, что оно всегда оценивается в 1. Изменения расположений в хранилище и памяти должны стирать знания о расположениях в хранилище и памяти, о которых неизвестно, что они отличаются: если мы сначала выполняем запись в расположение x, а затем в расположение y, и оба являются входными переменными, вторая может перезаписать первую, так что на самом деле мы не знаем, что хранится у x после того как мы выполнили запись в y. С другой стороны, если упрощение выражения x - y оценивается в ненулевую константу, мы знаем, что сохраняем знание о том, что хранится at x.
 
-At the end of this process, we know which expressions have to be on the stack in the end and have a list of modifications to memory and storage. This information is stored together with the basic blocks and is used to link them. Furthermore, knowledge about the stack, storage and memory configuration is forwarded to the next block(s). If we know the targets of all JUMP and JUMPI instructions, we can build a complete control flow graph of the program. If there is only one target we do not know (this can happen as in principle, jump targets can be computed from inputs), we have to erase all knowledge about the input state of a block as it can be the target of the unknown JUMP. If a JUMPI is found whose condition evaluates to a constant, it is transformed to an unconditional jump.
+В конце этого процесса мы знаем, какие выражения должны быть на стеке в конце и имеем список изменений памяти и хранилища. Эта информация хранится вместе с базовыми блоками и используется для их связи. Более того, знание о конфигурации стека, хранилища и памяти переправляются следующему блоку(ам). Если нам известны цели всех инструкций JUMP и JUMPI, мы можем построить полный граф потока управления программы. Если есть только одна цель, которую мы не знаем (это возможно, потому что, в принципе, цели переходов могут быть вычислены по входам), мы должны очистить все знание о входном состоянии блока, поскольку это может быть целью неизвестного JUMP. Если обнаруживается JUMPI, чье условие оценивается в константу, оно преобразуется в безусловный переход.
 
-As the last step, the code in each block is completely re-generated. A dependency graph is created from the expressions on the stack at the end of the block and every operation that is not part of this graph is essentially dropped. Now code is generated that applies the modifications to memory and storage in the order they were made in the original code (dropping modifications which were found not to be needed) and finally, generates all values that are required to be on the stack in the correct place.
+Напоследок код в каждом блоке полностью регенерируется. Граф зависимостей создается из выражений в стеке в конце блока, и каждая операция, которая не является частью этого графа, по сути, отбрасывается. Теперь генерируется код, который применяет изменения памяти и хранилища в том порядке, в котором они были сделаны в оригинальном коде (отбрасывая изменения, которые были признаны ненужными), и, наконец, генерирует все значения, которые требуются на стеке, в правильном месте.
 
-These steps are applied to each basic block and the newly generated code is used as replacement if it is smaller. If a basic block is split at a JUMPI and during the analysis, the condition evaluates to a constant, the JUMPI is replaced depending on the value of the constant, and thus code like
+Эти действия выполняются для каджого базового блока, и новый сгенерированный код используется как замена, если он меньше. Если базовый блок разделяется у JUMPI и во время анализа условие вычисляется в константу, JUMPI заменяется в зависимости от значения константы. Таким образом, код вроде
 
 ::
 
@@ -84,103 +80,97 @@ These steps are applied to each basic block and the newly generated code is used
     else
       return 1;
 
-is simplified to code which can also be compiled from
+упрощается до кода, который также может быть скомпилирован из этого фрагмента
 
 ::
 
     data[7] = 9;
     return 1;
 
-even though the instructions contained a jump in the beginning.
+несмотря на то, что инструкции содержали переход в начале.
 
 .. index:: ! commandline compiler, compiler;commandline, ! solc, ! linker
 
-******************************
-Using the Commandline Compiler
-******************************
+*********************************************
+Использование компилятора из командной строки
+*********************************************
 
-One of the build targets of the Solidity repository is `solc`, the solidity commandline compiler.
-Using `solc --help` provides you with an explanation of all options. The compiler can produce various outputs, ranging from simple binaries and assembly over an abstract syntax tree (parse tree) to estimations of gas usage.
-If you only want to compile a single file, you run it as `solc --bin sourceFile.sol` and it will print the binary. Before you deploy your contract, activate the optimizer while compiling using `solc --optimize --bin sourceFile.sol`. If you want to get some of the more advanced output variants of `solc`, it is probably better to tell it to output everything to separate files using `solc -o outputDirectory --bin --ast --asm sourceFile.sol`.
+Одной из целей сборки в репозитории Solidity является `solc`, компилятор Solidity командной строки. Введя команду `solc --help`, можно увидеть описание всех параметров. Компилятор может генерировать вывод в разных форматах: от простых двоичных файлов и ассемблера по абстрактному синтаксическому дереву (parse tree) до оценок использования газа.
 
-The commandline compiler will automatically read imported files from the filesystem, but
-it is also possible to provide path redirects using `prefix=path` in the following way:
+Если вы хотите скомпилировать только один файл, запустите компилятор как `solc --bin sourceFile.sol` и он напечатает двоичный файл. Прежде чем развертывать контракт, активируйте оптимизацию при компиляции: `solc --optimize --bin sourceFile.sol`. Если вы хотите получить некоторые более продвинутые вырианты вывода `solc`, вероятно, лучше сказать ему выводить все в отдельные файлы с помощью команды `solc -o outputDirectory --bin --ast --asm sourceFile.sol`.
+
+Компилятор командной строки автоматически прочитает импортированные файлы из файловой системы, но также можно перенаправить путь с помощью параметра `prefix=path` следующим образом:
 
     solc github.com/ethereum/dapp-bin/=/usr/local/lib/dapp-bin/ =/usr/local/lib/fallback file.sol
 
-This essentially instructs the compiler to search for anything starting with
-`github.com/ethereum/dapp-bin/` under `/usr/local/lib/dapp-bin` and if it does not
-find the file there, it will look at `/usr/local/lib/fallback` (the empty prefix
-always matches). `solc` will not read files from the filesystem that lie outside of
-the remapping targets and outside of the directories where explicitly specified source
-files reside, so things like `import "/etc/passwd";` only work if you add `=/` as a remapping.
+По сути, это предписывает компилятору искать все, начиная с `github.com/ethereum/dapp-bin/` в разделе `/usr/local/lib/dapp-bin`, и если он не найдет файл там, он будет смотреть в `/usr/local/lib/fallback` (пустой префикс всегда дает соответствие). `solc` не будет читать файлы из файловой системы, находящиеся вне remapping targets и вне каталогов, где находятся явно указанные исходные файлы, так что команды вроде `import "/etc/passwd";` работают, только если вы добавляете `=/` как remapping.
 
-If there are multiple matches due to remappings, the one with the longest common prefix is selected.
+Если из-за remappings есть несколько соответствий, выбирается соответствие с длиннейшим общим префиксом.
 
-If your contracts use [libraries](#libraries), you will notice that the bytecode contains substrings of the form `__LibraryName______`. You can use `solc` as a linker meaning that it will insert the library addresses for you at those points:
+Если ваши контракты используют [libraries](#libraries), вы заметите, что байт-код содержит подстроки формата `__LibraryName______`. Вы можете использоваться `solc` как компоновщик, что означает, что он вставит библиотечные адреса для вас в этих точках:
 
-Either add `--libraries "Math:0x12345678901234567890 Heap:0xabcdef0123456"` to your command to provide an address for each library or store the string in a file (one library per line) and run `solc` using `--libraries fileName`.
+Или добавьте в свою команду `--libraries "Math:0x12345678901234567890 Heap:0xabcdef0123456"`, чтобы предоставить адрес для каждой библиотеки или сохранить строку в файле (одна библиотека на строку) и запустите `solc`, используя `--libraries fileName`.
 
-If `solc` is called with the option `--link`, all input files are interpreted to be unlinked binaries (hex-encoded) in the `__LibraryName____`-format given above and are linked in-place (if the input is read from stdin, it is written to stdout). All options except `--libraries` are ignored (including `-o`) in this case.
+Если `solc` вызывается с параметром `--link`, все входные файлы интерпретируются как нескомпонованные двоичные файлы (в шестнадцатеричной кодировке) в приведенном выше формате `__LibraryName____` и компонуются на месте (если вход читается из stdin, он записывается в stdout). В этом случае все параметры, кроме `--libraries` (включая `-o`) игнорируются.
 
-***************
-Tips and Tricks
-***************
+*****************
+Советы и хитрости
+*****************
 
-* Use `delete` on arrays to delete all its elements.
-* Use shorter types for struct elements and sort them such that short types are grouped together. This can lower the gas costs as multiple SSTORE operations might be combined into a single (SSTORE costs 5000 or 20000 gas, so this is what you want to optimise). Use the gas price estimator (with optimiser enabled) to check!
-* Make your state variables public - the compiler will create :ref:`getters <visibility-and-accessors>` for you for free.
-* If you end up checking conditions on input or state a lot at the beginning of your functions, try using :ref:`modifiers`.
-* If your contract has a function called `send` but you want to use the built-in send-function, use `address(contractVariable).send(amount)`.
-* If you do **not** want your contracts to receive ether when called via `send`, you can add a throwing fallback function `function() { throw; }`.
-* Initialise storage structs with a single assignment: `x = MyStruct({a: 1, b: 2});`
+* Используйте `delete` с массивами для удаления всех их элементов.
+* Используйте более короткие типы с элементами структур и сортируйте их так, чтобы короткие типы группировались вместе. Это может снизить расходы на газ, потому что несколько операций SSTORE могут быть объединены в одну (SSTORE стоит 5000 или 20000 газа, так что вы хотите это оптимизировать). Используйте для проверки средство оценки стоимости газа (с включенным оптимизатором)!
+* Делайте свои переменные состояния public - тогда компилятор бесплатно создаст для вас :ref:`getters <visibility-and-accessors>`.
+* Если вы лосите себя на том, что много проверяете условия входных данных или состояния в начале функций, попробуйте использовать :ref:`modifiers`.
+* Если ваш контракт имеет функцию под названием `send`, но вы хотите использовать встроенную функцию send, используйте код `address(contractVariable).send(amount)`.
+* Если вы **не** хотите, чтобы ваши контракты получали эфир, будучи вызванными с помощью `send`, вы можете добавить throwing fallback функцию `function() { throw; }`.
+* Инициализируйте структуры в хранилище одной операцией присваивания: `x = MyStruct({a: 1, b: 2});`
 
-********
-Pitfalls
-********
+*******
+Ловушки
+*******
 
-Unfortunately, there are some subtleties the compiler does not yet warn you about.
+К сожалению, есть некоторые тонкости, о компилятор пока еще не предупреждает.
 
-- In `for (var i = 0; i < arrayName.length; i++) { ... }`, the type of `i` will be `uint8`, because this is the smallest type that is required to hold the value `0`. If the array has more than 255 elements, the loop will not terminate.
+- В коде `for (var i = 0; i < arrayName.length; i++) { ... }` типом `i` будет `uint8`, потому что это наименьший тип, который требуется для хранения значения `0`. Если массив содержит более 255 элементов, этот цикл не завершится.
 
-**********
-Cheatsheet
-**********
+*********
+Шпаргалка
+*********
 
 .. index:: block, coinbase, difficulty, number, block;number, timestamp, block;timestamp, msg, data, gas, sender, value, now, gas price, origin, sha3, ripemd160, sha256, ecrecover, addmod, mulmod, cryptography, this, super, selfdestruct, balance, send
 
-Global Variables
-================
+Глобальные переменные
+=====================
 
-- `block.coinbase` (`address`): current block miner's address
-- `block.difficulty` (`uint`): current block difficulty
-- `block.gaslimit` (`uint`): current block gaslimit
-- `block.number` (`uint`): current block number
-- `block.blockhash` (`function(uint) returns (bytes32)`): hash of the given block - only works for 256 most recent blocks
-- `block.timestamp` (`uint`): current block timestamp
-- `msg.data` (`bytes`): complete calldata
-- `msg.gas` (`uint`): remaining gas
-- `msg.sender` (`address`): sender of the message (current call)
-- `msg.value` (`uint`): number of wei sent with the message
-- `now` (`uint`): current block timestamp (alias for `block.timestamp`)
-- `tx.gasprice` (`uint`): gas price of the transaction
-- `tx.origin` (`address`): sender of the transaction (full call chain)
-- `sha3(...) returns (bytes32)`: compute the Ethereum-SHA3 hash of the (tightly packed) arguments
-- `sha256(...) returns (bytes32)`: compute the SHA256 hash of the (tightly packed) arguments
-- `ripemd160(...) returns (bytes20)`: compute RIPEMD of 256 the (tightly packed) arguments
-- `ecrecover(bytes32, uint8, bytes32, bytes32) returns (address)`: recover public key from elliptic curve signature
-- `addmod(uint x, uint y, uint k) returns (uint)`: compute `(x + y) % k` where the addition is performed with arbitrary precision and does not wrap around at `2**256`.
-- `mulmod(uint x, uint y, uint k) returns (uint)`: compute `(x * y) % k` where the multiplication is performed with arbitrary precision and does not wrap around at `2**256`.
-- `this` (current contract's type): the current contract, explicitly convertible to `address`
-- `super`: the contract one level higher in the inheritance hierarchy
-- `selfdestruct(address)`: destroy the current contract, sending its funds to the given address
-- `<address>.balance`: balance of the address in Wei
-- `<address>.send(uint256) returns (bool)`: send given amount of Wei to address, returns `false` on failure.
+- `block.coinbase` (`address`): адрес майнера текущего блока
+- `block.difficulty` (`uint`): сложность текущего блока
+- `block.gaslimit` (`uint`): ограничение газа в текущем блоке
+- `block.number` (`uint`): номер текущего блока
+- `block.blockhash` (`function(uint) returns (bytes32)`): хеш указанного блока - работает только для 256 последних блоков
+- `block.timestamp` (`uint`): временная метка текущего блока
+- `msg.data` (`bytes`): полный calldata
+- `msg.gas` (`uint`): оставшийся газ
+- `msg.sender` (`address`): отправитель сообщения (текущий вызов)
+- `msg.value` (`uint`): количество wei, отправленное с сообщением
+- `now` (`uint`): временная метка текущего блока (псевдоним для `block.timestamp`)
+- `tx.gasprice` (`uint`): цена газа транзакции
+- `tx.origin` (`address`): отправитель транзакции (полная цепь вызовов)
+- `sha3(...) returns (bytes32)`: вычисляет хеш Ethereum-SHA3 (плотно упакованных) аргументов
+- `sha256(...) returns (bytes32)`: вычисляет хеш SHA256 (плотно упакованных) аргументов
+- `ripemd160(...) returns (bytes20)`: вычисляет RIPEMD от 256 (плотно упакованных) аргументов
+- `ecrecover(bytes32, uint8, bytes32, bytes32) returns (address)`: восстанавливает открытый ключ из сигнатуры эллиптической кривой
+- `addmod(uint x, uint y, uint k) returns (uint)`: вычисляет `(x + y) % k`, где сложение выполняется с произвольной точностью и не wrap around при `2**256`.
+- `mulmod(uint x, uint y, uint k) returns (uint)`: вычисляет `(x * y) % k`, где умножение выполняется с произвольной точностью и не wrap around при `2**256`.
+- `this` (тип текущего контракта): текущий контракт, который можно явно преобразовать в `address`
+- `super`: контракт на один уровень выше в иерархии наследования
+- `selfdestruct(address)`: уничтожает текущий контракт, отправляя его фонды по указанному адресу
+- `<address>.balance`: баланс адреса в Wei
+- `<address>.send(uint256) returns (bool)`: отправляет указанное количество Wei по адресу; при сбое возвращает `false`.
 
 .. index:: visibility, public, private, external, internal
 
-Function Visibility Specifiers
-==============================
+Спецификаторы видимости функций
+===============================
 
 ::
 
@@ -188,19 +178,19 @@ Function Visibility Specifiers
         return true;
     }
 
-- `public`: visible externally and internally (creates accessor function for storage/state variables)
-- `private`: only visible in the current contract
-- `external`: only visible externally (only for functions) - i.e. can only be message-called (via `this.fun`)
-- `internal`: only visible internally
+- `public`: видима внешне и внутренне (создает функцию-аксессор для переменных в хранилище/переменных состояния)
+- `private`: видима только в текущем контракте
+- `external`: видима только внешне (только для функций), т. е. может быть вызвана только путем вызова сообщения (посредством `this.fun`)
+- `internal`: видима только внутренне
 
 
 .. index:: modifiers, constant, anonymous, indexed
 
-Modifiers
-=========
+Модификаторы
+============
 
-- `constant` for state variables: Disallows assignment (except initialisation), does not occupy storage slot.
-- `constant` for functions: Disallows modification of state - this is not enforced yet.
-- `anonymous` for events: Does not store event signature as topic.
-- `indexed` for event parameters: Stores the parameter as topic.
+- `constant` для переменных состояния: запрещает присваивание (за исключением инициализации), не занимает слот хранилища.
+- `constant` для функций: запрещает изменение состояния - это еще не обеспечивается.
+- `anonymous` для событий: не сохраняет сигнатуру события как тему-?.
+- `indexed` для параметров событий: сохраняет параметр как topic.
 
