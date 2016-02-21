@@ -1,66 +1,53 @@
-###################
-Installing Solidity
-###################
+##################
+Установка Solidity
+##################
 
-Browser-Solidity
-================
+Solidity в браузере
+===================
 
-If you just want to try Solidity for small contracts, you
-can try `browser-solidity <https://chriseth.github.io/browser-solidity>`_
-which does not need any installation. If you want to use it
-without connection to the Internet, you can also just save the page
-locally or clone http://github.com/chriseth/browser-solidity.
+Если вы просто хотите попробовать Solidity с небольшими контрактами, вы можете попробовать `browser-solidity <https://chriseth.github.io/browser-solidity>`_, который вообще не нужно устанавливать. Если вы хотите использовать его без подключения к Интернету, вы также можете просто сохранить страницу локально или клонировать репозиторий http://github.com/chriseth/browser-solidity.
 
 NPM / node.js
 =============
 
-This is probably the most portable and most convenient way to install Solidity locally.
+Пожалуй, это наиболее портативный и удобный способ установки Solidity на локальном устройстве.
 
-A platform-independent JavaScript library is provided by compiling the C++ source
-into JavaScript using Emscripten for browser-solidity and there is also an NPM
-package available.
+Платформенно-независимая библиотека JavaScript предоставляется путем компиляции исходного кода C++ в JavaScript с помощью Emscripten для browser-solidity, а также доступен пакет NPM.
 
-To install it, simply use
-
-::
+Чтобы установить его, просто введите команду::
 
     npm install solc
 
-Details about the usage of the nodejs package can be found in the
-`repository <https://github.com/chriseth/browser-solidity#nodejs-usage>`_.
+Подробности использования пакета nodejs можно найти в `repository <https://github.com/chriseth/browser-solidity#nodejs-usage>`_.
 
-Binary Packages
+Двоичные пакеты
 ===============
 
-Binary packages of Solidity together with its IDE Mix are available through
-the `C++ bundle <https://github.com/ethereum/webthree-umbrella/releases>`_ of
-Ethereum.
+Двоичные пакеты Solidity вместе с IDE Mix доступны в `C++ bundle <https://github.com/ethereum/webthree-umbrella/releases>`_ Эфириума.
 
-Building from Source
-====================
+Сборка из исходных файлов
+=========================
 
-Building Solidity is quite similar on MacOS X, Ubuntu and probably other Unices.
-This guide starts explaining how to install the dependencies for each platform
-and then shows how to build Solidity itself.
+Сборка Solidity довольно похожа в MacOS X, Ubuntu и, вероятно, других Unix. Это руководство начинается с объяснения того, как установить зависимости для каждой платформы, а затем показывает, как собрать сам Solidity.
 
 MacOS X
 -------
 
 
-Requirements:
+Требования:
 
 - OS X Yosemite (10.10.5)
 - Homebrew
 - Xcode
 
-Set up Homebrew:
+Настройте Homebrew:
 
 .. code-block:: bash
 
     brew update
     brew install boost --c++11             # this takes a while
     brew install cmake cryptopp miniupnpc leveldb gmp libmicrohttpd libjson-rpc-cpp 
-    # For Mix IDE and Alethzero only
+    # Только для IDE Mix и Alethzero
     brew install xz d-bus
     brew install llvm --HEAD --with-clang 
     brew install qt5 --with-d-bus          # add --verbose if long waits with a stale screen drive you crazy as well
@@ -68,24 +55,20 @@ Set up Homebrew:
 Ubuntu
 ------
 
-Below are the build instructions for the latest versions of Ubuntu. The best
-supported platform as of December 2014 is Ubuntu 14.04, 64 bit, with at least 2
-GB RAM. All our tests are done with this version. Community contributions for
-other versions are welcome!
+Ниже приведены инструкции по сборке для новейших версий Ubuntu. На декабрь 2014-? года лучше всего поддерживается 64-разрядная Ubuntu 14.04 с как минимум 2 ГБ оперативной памяти. Все наши тесты выполняются в этой версии. Вклады сообщества с инструкциями для других версий приветствуются!
 
-Install dependencies:
+Установка зависимостей:
 
-Before you can build the source, you need several tools and dependencies for the application to get started.
+Прежде чем вы сможете собрать проект из исходных файлов, вам нужно несколько инструментов и зависимостей для приложения.
 
-First, update your repositories. Not all packages are provided in the main
-Ubuntu repository, those you'll get from the Ethereum PPA and the LLVM archive.
+Первым делом обновите свои репозитории. Не все пакеты предоставляются через основной репозиторий Ubuntu, и те вы получите из Ethereum PPA и архива LLVM.
 
 .. note::
 
-    Ubuntu 14.04 users, you'll need the latest version of cmake. For this, use:
+    Пользователям Ubuntu 14.04 потребуется новейшая версия cmake. Чтобы добвить ее, введите следующую команду:
     `sudo apt-add-repository ppa:george-edison55/cmake-3.x`
 
-Now add all the rest:
+Теперь добавьте остальное:
 
 .. code-block:: bash
 
@@ -98,25 +81,24 @@ Now add all the rest:
     sudo apt-get -y update
     sudo apt-get -y upgrade
 
-For Ubuntu 15.04 (Vivid Vervet) or older, use the following command to add the develop packages:
+Для Ubuntu 15.04 (Vivid Vervet) или более старых версий введите следующую команду, чтобы добавить пакеты разработки:
 
 .. code-block:: bash
 
     sudo apt-get -y install build-essential git cmake libboost-all-dev libgmp-dev libleveldb-dev libminiupnpc-dev libreadline-dev libncurses5-dev libcurl4-openssl-dev libcryptopp-dev libjson-rpc-cpp-dev libmicrohttpd-dev libjsoncpp-dev libedit-dev libz-dev
 
-For Ubuntu 15.10 (Wily Werewolf) or newer, use the following command instead:
+Для Ubuntu 15.10 (Wily Werewolf) или более новых версий используйте вместо этого следующую команду:
 
 .. code-block:: bash
 
     sudo apt-get -y install build-essential git cmake libboost-all-dev libgmp-dev libleveldb-dev libminiupnpc-dev libreadline-dev libncurses5-dev libcurl4-openssl-dev libcryptopp-dev libjsonrpccpp-dev libmicrohttpd-dev libjsoncpp-dev libedit-dev libz-dev
     
-The reason for the change is that `libjsonrpccpp-dev` is available in the universe repository for newer versions of Ubuntu.
+Причина изменения в том, что `libjsonrpccpp-dev` доступна в более новых версиях Ubuntu в universe repository.
 
-Building
+Сборка
 --------
 
-Run this if you plan on installing Solidity only, ignore errors at the end as
-they relate only to Alethzero and Mix
+Если вы хотите установить только Solidity, выполните следующую команду; ошибки в конце проигнорируте, потому что они относятся только к Alethzero и Mix
 
 .. code-block:: bash
 
@@ -127,7 +109,7 @@ they relate only to Alethzero and Mix
                                                                                 #enabling DEVMJIT on OS X will not build
                                                                                 #feel free to enable it on Linux 
 
-If you opted to install Alethzero and Mix:
+Если вы хотите установить Alethzero и Mix, выполните:
 
 .. code-block:: bash
 
@@ -135,16 +117,13 @@ If you opted to install Alethzero and Mix:
     cd webthree-umbrella && mkdir -p build && cd build
     cmake ..
 
-If you want to help developing Solidity,
-you should fork Solidity and add your personal fork as a second remote:
+Если вы хотите помочь разрабатывать Solidity, вам следует форкнуть Solidity и добавить свой личный форк как второй remote:
 
 .. code-block:: bash
 
     cd webthree-umbrella/solidity
     git remote add personal git@github.com:username/solidity.git
 
-Note that webthree-umbrella uses submodules, so solidity is its own git
-repository, but its settings are not stored in `.git/config`, but in
-`webthree-umbrella/.git/modules/solidity/config`.
+Имейте в виду, что webthree-umbrella использует субмодули, так что solidity это собственный репозиторий git, но его параметры хранятся не в файле `.git/config`, а в файле `webthree-umbrella/.git/modules/solidity/config`.
 
 
