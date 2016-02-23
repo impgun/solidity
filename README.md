@@ -1,26 +1,26 @@
-# The Solidity Contract-Oriented Programming Language
-[![Join the chat at https://gitter.im/ethereum/solidity](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ethereum/solidity?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-## Useful links
+# Solidity: контрактно-ориентированный язык программирования
+[![Присоединяйтесь к чату: https://gitter.im/ethereum/solidity](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ethereum/solidity?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+## Полезные ссылки
 
-To get started you can find a basic introduction to the language in the [Solidity Documentation](https://solidity.readthedocs.org).
+Для начала можете ознакомиться с простым введением в язык в [документации по Solidity](https://solidity.readthedocs.org).
 
-You can start using [Solidity in your browser](https://chriseth.github.io/browser-solidity/) with no need to download or compile anything. This application only supports compilation - if you want to inject it into the blockchain, you have to use a client like [Geth](https://github.com/ethereum/go-ethereum/wiki) or [AlethZero](https://github.com/ethereum/alethzero).
+Вы можете начать использовать [Solidity в браузере](https://chriseth.github.io/browser-solidity/), ничего не загружая и не компилируя. Это приложение поддерживает только компиляцию - если вы хотите вставить контракт в блокчейн, вам нужен клиент, такой как [Geth](https://github.com/ethereum/go-ethereum/wiki) или [AlethZero](https://github.com/ethereum/alethzero).
 
-Also check out more documentations for [Solidity ABI](https://github.com/ethereum/wiki/wiki/Solidity,-Docs-and-ABI) and a crowdfunding [example contract](https://github.com/chriseth/cpp-ethereum/wiki/Crowdfunding-example-contract-in-Solidity) written in Solidity.
+Изучите [ABI Solidity](https://github.com/ethereum/wiki/wiki/Solidity,-Docs-and-ABI) и [пример контракта] для краудфандинга (https://github.com/chriseth/cpp-ethereum/wiki/Crowdfunding-example-contract-in-Solidity), написанный на Solidity.
 
-[Changelog](https://github.com/ethereum/wiki/wiki/Solidity-Changelog)
+[Журнал изменений](https://github.com/ethereum/wiki/wiki/Solidity-Changelog)
 
-The [Solidity Features](https://github.com/ethereum/wiki/wiki/Solidity-Features) page contains a list of already completed Solidity feature stories with explanations and demonstrations, it is being updated continuously. More technical information you can find in the [Pivotal Tracker](https://www.pivotaltracker.com/n/projects/1189488).
+Страница [возможностей Solidity](https://github.com/ethereum/wiki/wiki/Solidity-Features) содержит список уже реализованных возможностей? Solidity с объяснениями и демонстрациями. Более технические сведения доступны в [Pivotal Tracker](https://www.pivotaltracker.com/n/projects/1189488).
 
-Solidity is still under development. So please do not hesitate and open an [issue in github](https://github.com/ethereum/solidity/issues) if you encounter anything strange.
+Solidity все еще разрабатывается, так что, если вам повстречается что-то странное, не раздумывайте и откройте [issue в github](https://github.com/ethereum/solidity/issues).
 
-## Building
+## Сборка
 
-See the [Wiki](https://github.com/ethereum/webthree-umbrella/wiki) for build instructions, compatibility information and build tips. 
+Инструкции по сборке и сведения о совместимости см. в [Wiki](https://github.com/ethereum/webthree-umbrella/wiki). 
 
-## How to Contribute
+## Как принять участие
 
-### External Contributors
+### Внешние Contributors
 
 I hereby place all my contributions in this codebase under an MIT
 licence, as specified [here](http://opensource.org/licenses/MIT).
